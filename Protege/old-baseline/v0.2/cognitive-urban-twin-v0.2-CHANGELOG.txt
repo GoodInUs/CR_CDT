@@ -1,0 +1,34 @@
+Cognitive Urban Twin Ontology — v0.2 Changelog
+
+Baseline
+--------
+v0.1 remains the canonical UML→OWL translation baseline.
+
+Changes in v0.2
+---------------
+1. Added top-level object-property hierarchy:
+   - hasStructuralRelationship
+   - hasDependencyRelationship
+   - hasRiskRelationship
+   - hasObservationRelationship
+   - hasSemanticRelationship
+   - hasAnalyticRelationship
+   - hasDecisionRelationship
+
+2. Existing object properties were assigned beneath those parent properties.
+
+3. Added selected inverse properties:
+   - isDependedOnBy
+   - isThreatenedBy
+   - isSuppliedElectricityBy
+   - isJustificationFor
+
+4. Added explanatory comments to key properties.
+
+5. Preserved existing classes, class hierarchy, datatype properties,
+   selected OWL restrictions, UML-operation annotations and module annotations.
+
+Recommended next step
+---------------------
+Develop competency questions and corresponding SHACL shapes, then align
+selected concepts with SOSA/SSN, PROV-O, GeoSPARQL, OWL-Time and QUDT.

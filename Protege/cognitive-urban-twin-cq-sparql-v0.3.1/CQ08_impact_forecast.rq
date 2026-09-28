@@ -1,0 +1,11 @@
+PREFIX cut: <https://example.org/cognitive-urban-twin#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?impact ?level ?confidence
+WHERE {
+  ?impact a cut:ImpactForecast ;
+          cut:hasHazardInput cut:Heatwave_August_01 ;
+          cut:impactLevel ?level ;
+          cut:confidence ?confidence .
+}

@@ -1,0 +1,59 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cut:DecisionContextShape a sh:NodeShape ;
+    sh:property [ sh:class cut:DecisionStatus ;
+            sh:maxCount 1 ;
+            sh:message "A DecisionContext must have exactly one DecisionStatus." ;
+            sh:minCount 1 ;
+            sh:path cut:hasDecisionStatus ],
+        [ sh:class cut:DecisionRisk ;
+            sh:maxCount 1 ;
+            sh:message "A DecisionContext must have exactly one DecisionRisk." ;
+            sh:minCount 1 ;
+            sh:path cut:hasDecisionRisk ],
+        [ sh:datatype xsd:duration ;
+            sh:maxCount 1 ;
+            sh:message "decisionWindow must be an xsd:duration when supplied." ;
+            sh:path cut:decisionWindow ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:message "A DecisionContext must have exactly one decisionUrgency value." ;
+            sh:minCount 1 ;
+            sh:path cut:decisionUrgency ],
+        [ sh:class cut:DataCentre ;
+            sh:message "A DecisionContext must identify at least one affected DataCentre." ;
+            sh:minCount 1 ;
+            sh:path cut:hasAffectedInfrastructure ],
+        [ sh:class cut:ImpactForecast ;
+            sh:message "A DecisionContext must contain at least one ImpactForecast." ;
+            sh:minCount 1 ;
+            sh:path cut:hasRiskAssessment ],
+        [ sh:class cut:CandidateAction ;
+            sh:message "A DecisionContext must contain at least one candidate action." ;
+            sh:minCount 1 ;
+            sh:path cut:hasCandidateAction ],
+        [ sh:class cut:DecisionEvidence ;
+            sh:message "A DecisionContext must contain at least one DecisionEvidence item." ;
+            sh:minCount 1 ;
+            sh:path cut:hasDecisionEvidence ] ;
+    sh:targetClass cut:DecisionContext .
+
+cut:DecisionRecommendationShape_v031 a sh:NodeShape ;
+    sh:property [ sh:class cut:ExplanationAssurance ;
+            sh:maxCount 1 ;
+            sh:message "A DecisionRecommendation must have exactly one ExplanationAssurance." ;
+            sh:minCount 1 ;
+            sh:path cut:justifiedBy ],
+        [ sh:class cut:AnticipatoryAction ;
+            sh:message "A DecisionRecommendation must recommend at least one AnticipatoryAction." ;
+            sh:minCount 1 ;
+            sh:path cut:recommendsAction ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:message "A DecisionRecommendation must have exactly one recommendationId." ;
+            sh:minCount 1 ;
+            sh:path cut:recommendationId ] ;
+    sh:targetClass cut:DecisionRecommendation .
+

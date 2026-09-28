@@ -1,0 +1,27 @@
+Step,Stage,Subject,Class / Role,Predicate,Object,Semantic purpose,Triple verification
+1,Hazard,Heatwave_August_01,ExtremeHeat,threatens,DataCentre_East_01,Initiating environmental hazard threatens critical digital infrastructure.,PASS
+2,Infrastructure,DataCentre_East_01,DataCentre,contributesDemandTo,GridConstraint_East_01,Affected data centre contributes demand to the constrained electricity system.,PASS
+3,Energy constraint,ElectricityGrid_East,ElectricityGrid,experiencesGridConstraint,GridConstraint_East_01,Electricity grid explicitly experiences the shared grid constraint.,PASS
+4,Energy supply,ElectricityGrid_East,ElectricityGrid,suppliesElectricityTo,DataCentre_East_01,Grid-to-data-centre dependency is represented explicitly.,PASS
+5,Service dependency,UrbanService_TrafficManagement,UrbanService,dependsOn,DataCentre_East_01,Critical urban service depends on the threatened data centre.,PASS
+6,Service impact,UrbanService_TrafficManagement,UrbanService,hasServiceImpactTarget,ImpactForecast_Heatwave_01,Service dependency is linked to the heatwave impact assessment.,PASS
+7,Hazard evidence,Evidence_HeatForecast_01,DecisionEvidence,evidenceAbout,Heatwave_August_01,Forecast evidence grounds the initiating hazard.,PASS
+8,Infrastructure evidence,Evidence_DataCentreTelemetry_01,DecisionEvidence,evidenceAbout,DataCentre_East_01,Telemetry grounds the affected infrastructure state.,PASS
+9,Grid evidence,Evidence_GridState_01,DecisionEvidence,evidenceAbout,ElectricityGrid_East,Grid-state evidence grounds the energy-system state.,PASS
+10,Service evidence,Evidence_ServiceDependency_01,DecisionEvidence,evidenceAbout,UrbanService_TrafficManagement,Dependency evidence grounds the affected service relationship.,PASS
+11,Impact assessment,ImpactForecast_Heatwave_01,ImpactForecast,hasHazardInput,Heatwave_August_01,Impact assessment is explicitly derived for the initiating hazard.,PASS
+12,Risk context,ImpactForecast_Heatwave_01,ImpactForecast,providesRiskContextTo,CognitiveTwin_City_01,Predicted impact supplies risk context to the cognitive twin.,PASS
+13,Decision framing,CognitiveTwin_City_01,CognitiveTwin,hasDecisionContext,DecisionContext_Heatwave_01,The twin owns the bounded decision context.,PASS
+14,Decision evidence,DecisionContext_Heatwave_01,DecisionContext,hasDecisionEvidence,Evidence_HeatForecast_01,Decision context is explicitly evidence-grounded; four evidence instances are attached.,PASS
+15,Risk assessment,DecisionContext_Heatwave_01,DecisionContext,hasRiskAssessment,ImpactForecast_Heatwave_01,Decision context includes the predicted impact/risk assessment.,PASS
+16,Candidate action,DecisionContext_Heatwave_01,DecisionContext,hasCandidateAction,Action_Defer_Elastic_Load_01,Workload deferral is represented as a candidate intervention.,PASS
+17,Candidate action,DecisionContext_Heatwave_01,DecisionContext,hasCandidateAction,Action_Dispatch_Battery_01,Battery dispatch is represented as a candidate intervention.,PASS
+18,Recommendation,CognitiveTwin_City_01,CognitiveTwin,generatesRecommendation,Recommendation_Heatwave_01,The cognitive twin generates the decision recommendation.,PASS
+19,Selection,Recommendation_Heatwave_01,DecisionRecommendation,selectedAction,Action_Defer_Elastic_Load_01,The recommendation selects workload deferral.,PASS
+20,Selection,Recommendation_Heatwave_01,DecisionRecommendation,selectedAction,Action_Dispatch_Battery_01,The recommendation selects battery dispatch as part of the composite response.,PASS
+21,Explanation,Recommendation_Heatwave_01,DecisionRecommendation,justifiedBy,Explanation_Heatwave_01,Recommendation is explicitly linked to explanation/assurance.,PASS
+22,Outcome feedback,Action_Defer_Elastic_Load_01,CandidateAction / WorkloadManagement,returnsOutcomeDataTo,ObservationBase_City_01,Action outcome returns to the observation base.,PASS
+23,Outcome feedback,Action_Dispatch_Battery_01,CandidateAction / GridBrokering,returnsOutcomeDataTo,ObservationBase_City_01,Second action outcome returns to the same observation base.,PASS
+24,State update,ObservationBase_City_01,ObservationBase,providesStateTo,PredictionScenarioEngine_01,Observed post-action state feeds predictive reasoning.,PASS
+25,Re-prediction,PredictionScenarioEngine_01,PredictionScenarioEngine,producesImpactForecast,ImpactForecast_Heatwave_01,Prediction engine updates the impact assessment.,PASS
+26,Cognitive feedback,PredictionScenarioEngine_01,PredictionScenarioEngine,feedsScenarioTo,CognitiveTwin_City_01,"Updated scenario returns to the cognitive twin, closing the reasoning loop.",PASS

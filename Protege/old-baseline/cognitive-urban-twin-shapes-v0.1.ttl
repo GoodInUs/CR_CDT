@@ -1,0 +1,32 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cut:DecisionRecommendationShape a sh:NodeShape ;
+  sh:targetClass cut:DecisionRecommendation ;
+  sh:property [
+    sh:path cut:recommendationId ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ] ;
+  sh:property [
+    sh:path cut:justifiedBy ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class cut:ExplanationAssurance
+  ] ;
+  sh:property [
+    sh:path cut:recommendsAction ;
+    sh:minCount 1 ;
+    sh:class cut:AnticipatoryAction
+  ] .
+
+cut:DataCentreShape a sh:NodeShape ;
+  sh:targetClass cut:DataCentre ;
+  sh:property [
+    sh:path cut:dataCentreId ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ] .

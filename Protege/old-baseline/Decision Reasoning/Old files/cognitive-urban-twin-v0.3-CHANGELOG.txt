@@ -1,0 +1,44 @@
+Cognitive Urban Twin Ontology — v0.3 Decision Reasoning
+
+Baseline
+--------
+Extends verified v0.2.1 ontology + heatwave scenario.
+
+New ontology concepts
+---------------------
+- DecisionContext
+- DecisionEvidence
+- CandidateAction
+- DecisionRisk
+- DecisionStatus
+
+New decision-context relations
+------------------------------
+- hasDecisionContext
+- hasDecisionEvidence
+- evidenceAbout
+- hasRiskAssessment
+- hasAffectedInfrastructure
+- hasAffectedService
+- hasGridConstraint
+- hasAvailableFlexibility
+- hasCandidateAction
+- hasDecisionRisk
+- hasDecisionStatus
+- selectedAction
+- explainsRecommendation
+- supportedByEvidence
+
+Scenario enhancements
+---------------------
+- Heatwave-specific DecisionContext
+- four machine-readable evidence objects
+- explicit candidate actions
+- explicit selected actions
+- actionable/high-risk decision state
+- ExplanationAssurance linked directly to evidence
+
+Purpose
+-------
+Move from a semantic state model toward explainable, action-oriented
+decision support while retaining traceability to the Figure 4.4 architecture.

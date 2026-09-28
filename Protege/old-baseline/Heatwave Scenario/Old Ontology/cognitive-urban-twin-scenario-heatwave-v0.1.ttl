@@ -1,0 +1,120 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Scenario: Heatwave-induced data-centre stress affecting urban services
+#################################################################
+
+cut:Heatwave_August_01
+    a cut:ExtremeHeat ;
+    cut:hazardType "Extreme heat" ;
+    cut:severityLevel "High" ;
+    cut:expectedOnset "2026-08-24T10:00:00"^^xsd:dateTime ;
+    cut:expectedDuration "P2D"^^xsd:duration ;
+    cut:maximumTemperature "38.5"^^xsd:decimal ;
+    cut:threatens cut:DataCentre_East_01 .
+
+cut:DataCentre_East_01
+    a cut:DataCentre ;
+    cut:dataCentreId "DC-EAST-01" ;
+    cut:powerUsageEffectiveness "1.42"^^xsd:decimal ;
+    cut:hazardExposure "Heat stress" ;
+    cut:maximumPowerDemand "9.5"^^xsd:decimal ;
+    cut:contributesDemandTo cut:GridConstraint_East_01 .
+
+cut:GridConstraint_East_01
+    a cut:GridConstraint ;
+    cut:capacityLimit "8.8"^^xsd:decimal ;
+    cut:voltageLimit "1.00"^^xsd:decimal ;
+    cut:outageProbability "0.12"^^xsd:decimal .
+
+cut:ElectricityGrid_East
+    a cut:ElectricityGrid ;
+    cut:availableHeadroom "1.1"^^xsd:decimal ;
+    cut:reserveMargin "0.09"^^xsd:decimal ;
+    cut:operatingState "Constrained" ;
+    cut:suppliesElectricityTo cut:DataCentre_East_01 ;
+    cut:experiencesGridConstraint cut:GridConstraint_East_01 .
+
+cut:UrbanService_TrafficManagement
+    a cut:UrbanService ;
+    cut:serviceId "SERVICE-TRAFFIC-01" ;
+    cut:minimumServiceLevel "0.85"^^xsd:decimal ;
+    cut:dependsOn cut:DataCentre_East_01 ;
+    cut:hasServiceImpactTarget cut:ImpactForecast_Heatwave_01 .
+
+cut:UrbanService_EmergencyResponse
+    a cut:UrbanService ;
+    cut:serviceId "SERVICE-EMERGENCY-01" ;
+    cut:minimumServiceLevel "0.95"^^xsd:decimal ;
+    cut:dependsOn cut:DataCentre_East_01 ;
+    cut:hasServiceImpactTarget cut:ImpactForecast_Heatwave_01 .
+
+cut:ImpactForecast_Heatwave_01
+    a cut:ImpactForecast ;
+    cut:hasHazardInput cut:Heatwave_August_01 ;
+    cut:impactLevel "High" ;
+    cut:expectedSocioEconomicCost "1250000"^^xsd:decimal ;
+    cut:confidence "0.86"^^xsd:decimal ;
+    cut:providesRiskContextTo cut:CognitiveTwin_City_01 .
+
+cut:ElasticLoad_AI_01
+    a cut:ElasticDataLoad ;
+    cut:providesComputeFlexibility cut:ComputeFlexibility_DC_01 .
+
+cut:ComputeFlexibility_DC_01
+    a cut:ComputeFlexibility .
+
+cut:BatteryStorage_DC_01
+    a cut:BatteryStorage .
+
+cut:CognitiveTwin_City_01
+    a cut:CognitiveTwin ;
+    cut:hasObservationBase cut:ObservationBase_City_01 ;
+    cut:hasKnowledgeBase cut:KnowledgeBase_City_01 ;
+    cut:hasDecisionBase cut:DecisionBase_City_01 ;
+    cut:generatesRecommendation cut:Recommendation_Heatwave_01 .
+
+cut:ObservationBase_City_01
+    a cut:ObservationBase ;
+    cut:providesStateTo cut:PredictionScenarioEngine_01 .
+
+cut:KnowledgeBase_City_01
+    a cut:KnowledgeBase ;
+    cut:providesModelTo cut:PredictionScenarioEngine_01 .
+
+cut:DecisionBase_City_01
+    a cut:DecisionBase ;
+    cut:supportsRecommendation cut:Recommendation_Heatwave_01 .
+
+cut:PredictionScenarioEngine_01
+    a cut:PredictionScenarioEngine ;
+    cut:producesImpactForecast cut:ImpactForecast_Heatwave_01 ;
+    cut:feedsScenarioTo cut:CognitiveTwin_City_01 .
+
+cut:Explanation_Heatwave_01
+    a cut:ExplanationAssurance ;
+    cut:provenance "Derived from heat forecast, data-centre telemetry, grid state and service dependency model" ;
+    cut:confidence "0.86"^^xsd:decimal .
+
+cut:Recommendation_Heatwave_01
+    a cut:DecisionRecommendation ;
+    cut:recommendationId "REC-HEAT-001" ;
+    cut:rationale "Reduce flexible compute demand before peak heat and grid stress while preserving critical urban services." ;
+    cut:confidence "0.86"^^xsd:decimal ;
+    cut:decisionDeadline "2026-08-24T08:00:00"^^xsd:dateTime ;
+    cut:justifiedBy cut:Explanation_Heatwave_01 ;
+    cut:recommendsAction cut:Action_Defer_Elastic_Load_01 ,
+                         cut:Action_Dispatch_Battery_01 .
+
+cut:Action_Defer_Elastic_Load_01
+    a cut:WorkloadManagement ;
+    cut:actionId "ACT-WORKLOAD-001" ;
+    cut:requiredLeadTime "PT30M"^^xsd:duration ;
+    cut:returnsOutcomeDataTo cut:ObservationBase_City_01 .
+
+cut:Action_Dispatch_Battery_01
+    a cut:GridBrokering ;
+    cut:actionId "ACT-GRID-001" ;
+    cut:requiredLeadTime "PT10M"^^xsd:duration ;
+    cut:returnsOutcomeDataTo cut:ObservationBase_City_01 .

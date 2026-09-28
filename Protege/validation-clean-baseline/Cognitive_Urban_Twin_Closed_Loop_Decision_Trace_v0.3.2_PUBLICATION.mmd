@@ -1,0 +1,111 @@
+---
+title: Cognitive Urban Twin — Closed-Loop Decision Reasoning
+config:
+  layout: elk
+  theme: base
+  flowchart:
+    curve: linear
+    nodeSpacing: 28
+    rankSpacing: 42
+---
+flowchart LR
+
+  %% =========================================================
+  %% 1. URBAN STATE
+  %% =========================================================
+  subgraph S1["1  URBAN STATE & DEPENDENCIES"]
+    direction TB
+    H["Heatwave<br/><small>Heatwave_August_01</small>"]
+    DC["Data Centre<br/><small>DataCentre_East_01</small>"]
+    GRID["Electricity Grid<br/><small>ElectricityGrid_East</small>"]
+    GC["Grid Constraint<br/><small>GridConstraint_East_01</small>"]
+    SVC["Traffic Management<br/><small>Urban Service</small>"]
+
+    H -->|"threatens"| DC
+    GRID -->|"supplies"| DC
+    DC -->|"contributes demand"| GC
+    GRID -->|"experiences"| GC
+    SVC -->|"depends on"| DC
+  end
+
+  %% =========================================================
+  %% 2. EVIDENCE + IMPACT
+  %% =========================================================
+  subgraph S2["2  EVIDENCE & IMPACT"]
+    direction TB
+    EV["Decision Evidence<br/><small>Weather 0.92 · Telemetry 0.95<br/>Grid 0.90 · Service 0.99</small>"]
+    IMP["Impact Forecast<br/><b>High</b><br/><small>confidence 0.86</small>"]
+  end
+
+  H -.-> EV
+  DC -.-> EV
+  GRID -.-> EV
+  SVC -.-> EV
+  H -->|"hazard input"| IMP
+  SVC -->|"service impact"| IMP
+
+  %% =========================================================
+  %% 3. COGNITIVE REASONING
+  %% =========================================================
+  subgraph S3["3  COGNITIVE DECISION REASONING"]
+    direction TB
+    CT["Cognitive Twin"]
+    CONTEXT["Decision Context<br/><small>High urgency · 2 h window</small>"]
+    REC["Recommendation<br/><small>REC-HEAT-001 · confidence 0.86</small>"]
+    EX["Explanation & Assurance<br/><small>evidence · provenance · confidence</small>"]
+
+    CT -->|"frames"| CONTEXT
+    CONTEXT -->|"supports reasoning"| REC
+    CT -->|"generates"| REC
+    REC -->|"justified by"| EX
+  end
+
+  EV -->|"decision evidence"| CONTEXT
+  IMP -->|"risk assessment"| CONTEXT
+  IMP -->|"risk context"| CT
+  EV -.->|"supports"| EX
+
+  %% =========================================================
+  %% 4. ACTION
+  %% =========================================================
+  subgraph S4["4  ANTICIPATORY ACTION"]
+    direction TB
+    A1["Defer Elastic Load<br/><small>Workload management · 30 min</small>"]
+    A2["Dispatch Battery<br/><small>Grid brokering · 10 min</small>"]
+  end
+
+  CONTEXT -->|"candidate"| A1
+  CONTEXT -->|"candidate"| A2
+  REC -->|"selected"| A1
+  REC -->|"selected"| A2
+
+  %% =========================================================
+  %% 5. FEEDBACK
+  %% =========================================================
+  subgraph S5["5  OUTCOME, PREDICTION & ADAPTATION"]
+    direction TB
+    OBS["Observation Base<br/><small>updated operational state</small>"]
+    PRED["Prediction & Scenario Engine"]
+    OBS -->|"provides state"| PRED
+  end
+
+  A1 -->|"outcome"| OBS
+  A2 -->|"outcome"| OBS
+
+  PRED ==>|"UPDATED SCENARIO"| CT
+  PRED -.->|"updated impact"| IMP
+
+  %% =========================================================
+  %% STYLING
+  %% =========================================================
+  classDef urban fill:#E7F0F7,stroke:#526A7B,stroke-width:1.2px,color:#17212B;
+  classDef evidence fill:#EDF4E8,stroke:#617557,stroke-width:1.2px,color:#17212B;
+  classDef cognitive fill:#F2EAF4,stroke:#765C79,stroke-width:1.2px,color:#17212B;
+  classDef action fill:#F8F0E4,stroke:#806B4D,stroke-width:1.2px,color:#17212B;
+  classDef feedback fill:#EEEEEE,stroke:#666666,stroke-width:1.2px,color:#17212B;
+
+  class H,DC,GRID,GC,SVC urban;
+  class EV,IMP evidence;
+  class CT,CONTEXT,REC,EX cognitive;
+  class A1,A2 action;
+  class OBS,PRED feedback;

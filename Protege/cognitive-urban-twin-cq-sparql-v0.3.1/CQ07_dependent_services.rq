@@ -1,0 +1,9 @@
+PREFIX cut: <https://example.org/cognitive-urban-twin#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?service
+WHERE {
+  ?service a cut:UrbanService ;
+           cut:dependsOn cut:DataCentre_East_01 .
+}

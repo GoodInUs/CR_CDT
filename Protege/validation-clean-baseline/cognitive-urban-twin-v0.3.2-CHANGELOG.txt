@@ -1,0 +1,22 @@
+Cognitive Urban Twin Ontology — v0.3.2 Validation Clean
+
+Changes from v0.3.1
+-------------------
+1. decisionUrgency literal changed to explicit xsd:string.
+2. recommendationId literal changed to explicit xsd:string.
+3. Validation logic now treats sh:class in a subclass-aware manner.
+   CandidateAction is a subclass of AnticipatoryAction, so candidate actions
+   satisfy the AnticipatoryAction class constraint without redundant explicit typing.
+
+Regression results
+------------------
+- Ontology Turtle syntax: PASS
+- SHACL shapes Turtle syntax: PASS
+- SHACL-style property constraints: PASS
+- Decision reasoning tests: 12/12 PASS
+- Competency questions: 26/26 PASS
+
+Purpose
+-------
+Establish a validation-clean baseline before producing final documentation,
+figures and chapter narrative.

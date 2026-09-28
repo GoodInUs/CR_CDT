@@ -1,0 +1,22 @@
+Cognitive Urban Twin Ontology — v0.3.1 WebProtégé-Clean
+
+Changes from v0.3
+-----------------
+1. Removed four OWL Restriction nodes attached to DecisionContext that WebProtégé
+   rendered as blank/UUID parent classes.
+2. Preserved all named classes, object properties, datatype properties,
+   inverse properties, scenario individuals, evidence objects, decision context,
+   candidate actions, recommendation links and explanation/assurance links.
+3. Moved DecisionContext minimum-cardinality requirements into SHACL:
+   - at least one DecisionEvidence
+   - at least one affected DataCentre
+   - at least one ImpactForecast
+   - at least one CandidateAction
+4. Added SHACL checks for DecisionRisk, DecisionStatus, decisionUrgency and decisionWindow.
+5. Re-ran the 12 v0.3 reasoning checks.
+
+Rationale
+---------
+OWL is retained for open-world semantic meaning and inference.
+SHACL is used for closed-world completeness/validation requirements.
+This gives a cleaner WebProtégé class hierarchy and a stronger modelling separation.

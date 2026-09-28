@@ -1,0 +1,27 @@
+CQ,Question,Classes,Properties,Expected Result,Query File,Observed Rows,Status
+CQ01,What hazard is currently threatening critical urban infrastructure?,"WeatherHazard, DataCentre","hazardType, severityLevel, threatens",≥1 hazard,CQ01_current_hazard.rq,1,PASS
+CQ02,Which infrastructure assets are threatened by the hazard?,"WeatherHazard, DataCentre",threatens,DataCentre_East_01,CQ02_threatened_infrastructure.rq,1,PASS
+CQ03,What evidence supports identification of the hazard?,"DecisionEvidence, WeatherHazard","evidenceAbout, evidenceConfidence",Evidence_HeatForecast_01,CQ03_hazard_evidence.rq,1,PASS
+CQ04,What infrastructure telemetry is available for the affected asset?,"DecisionEvidence, DataCentre","evidenceAbout, evidenceConfidence",Evidence_DataCentreTelemetry_01,CQ04_infrastructure_evidence.rq,1,PASS
+CQ05,What grid constraint is associated with the affected infrastructure?,"DataCentre, GridConstraint",contributesDemandTo,GridConstraint_East_01,CQ05_grid_constraint.rq,1,PASS
+CQ06,Which electricity grid supplies the affected infrastructure?,"ElectricityGrid, DataCentre",suppliesElectricityTo,ElectricityGrid_East,CQ06_grid_supply.rq,1,PASS
+CQ07,Which urban services depend upon the affected infrastructure?,"UrbanService, DataCentre",dependsOn,2 services,CQ07_dependent_services.rq,2,PASS
+CQ08,What impact is forecast for the hazard?,"ImpactForecast, WeatherHazard","hasHazardInput, impactLevel, confidence",ImpactForecast_Heatwave_01,CQ08_impact_forecast.rq,1,PASS
+CQ09,Which services are expected to be affected?,"DecisionContext, UrbanService",hasAffectedService,2 services,CQ09_affected_services.rq,2,PASS
+CQ10,What evidence supports the impact assessment?,"DecisionContext, DecisionEvidence",hasDecisionEvidence,4 evidence items,CQ10_impact_evidence.rq,4,PASS
+CQ11,What is the current decision context?,"CognitiveTwin, DecisionContext",hasDecisionContext,DecisionContext_Heatwave_01,CQ11_current_decision_context.rq,1,PASS
+CQ12,What infrastructure and services are included in that context?,"DecisionContext, DataCentre, UrbanService","hasAffectedInfrastructure, hasAffectedService",1 infrastructure + 2 services,CQ12_decision_scope.rq,2,PASS
+CQ13,What evidence is available to support the decision?,"DecisionContext, DecisionEvidence","hasDecisionEvidence, evidenceAbout",4 evidence items,CQ13_decision_evidence.rq,4,PASS
+CQ14,What is the assessed decision risk?,"DecisionContext, DecisionRisk",hasDecisionRisk,HighDecisionRisk,CQ14_decision_risk.rq,1,PASS
+CQ15,What operational flexibility is available?,"DecisionContext, FlexibleResource",hasAvailableFlexibility,2 resources,CQ15_available_flexibility.rq,2,PASS
+CQ16,What candidate actions are available?,"DecisionContext, CandidateAction",hasCandidateAction,2 actions,CQ16_candidate_actions.rq,2,PASS
+CQ17,What recommendation has the cognitive twin generated?,"CognitiveTwin, DecisionRecommendation",generatesRecommendation,Recommendation_Heatwave_01,CQ17_generated_recommendation.rq,1,PASS
+CQ18,Which actions have been selected?,"DecisionRecommendation, AnticipatoryAction",selectedAction,2 actions,CQ18_selected_actions.rq,2,PASS
+CQ19,What evidence and explanation justify the recommendation?,"ExplanationAssurance, DecisionEvidence","justifiedBy, supportedByEvidence",1 explanation + 4 evidence items,CQ19_recommendation_justification.rq,4,PASS
+CQ20,How confident is the system in the recommendation?,DecisionRecommendation,confidence,0.86,CQ20_recommendation_confidence.rq,1,PASS
+CQ21,How quickly can each intervention be implemented?,AnticipatoryAction,requiredLeadTime,10 min and 30 min,CQ21_action_lead_times.rq,2,PASS
+CQ22,What outcome observations are returned after an intervention?,"AnticipatoryAction, ObservationBase",returnsOutcomeDataTo,ObservationBase_City_01,CQ22_action_outcome_observation.rq,2,PASS
+CQ23,Where are intervention outcomes subsequently supplied?,"ObservationBase, PredictionScenarioEngine",providesStateTo,PredictionScenarioEngine_01,CQ23_outcome_state_destination.rq,2,PASS
+CQ24,What new impact forecast is produced from the updated state?,"PredictionScenarioEngine, ImpactForecast",producesImpactForecast,ImpactForecast_Heatwave_01,CQ24_updated_impact_forecast.rq,1,PASS
+CQ25,How is the updated scenario returned to the cognitive twin?,"PredictionScenarioEngine, CognitiveTwin",feedsScenarioTo,CognitiveTwin_City_01,CQ25_updated_scenario_to_twin.rq,1,PASS
+CQ26,Can the full decision trace be reconstructed end-to-end?,All core decision-chain classes,end-to-end traversal,≥1 complete trace,CQ26_end_to_end_trace.rq,4,PASS

@@ -1,0 +1,91 @@
+---
+title: Cognitive Urban Twin — Closed-Loop Decision Reasoning Trace
+config:
+  layout: elk
+  theme: base
+  flowchart:
+    curve: linear
+---
+flowchart LR
+
+  subgraph WORLD["1. Urban State & Dependencies"]
+    H["Heatwave<br/>Heatwave_August_01"]
+    DC["Data Centre<br/>DataCentre_East_01"]
+    GRID["Electricity Grid<br/>ElectricityGrid_East"]
+    GC["Grid Constraint<br/>GridConstraint_East_01"]
+    SVC["Urban Service<br/>Traffic Management"]
+    H -->|"threatens"| DC
+    GRID -->|"supplies electricity"| DC
+    DC -->|"contributes demand"| GC
+    GRID -->|"experiences"| GC
+    SVC -->|"depends on"| DC
+  end
+
+  subgraph EVID["2. Evidence & Impact"]
+    E1["Weather Forecast<br/>0.92"]
+    E2["Data-Centre Telemetry<br/>0.95"]
+    E3["Grid State<br/>0.90"]
+    E4["Service Dependency<br/>0.99"]
+    IMP["Impact Forecast<br/>High impact · confidence 0.86"]
+  end
+
+  H -.-> E1
+  DC -.-> E2
+  GRID -.-> E3
+  SVC -.-> E4
+  H --> IMP
+  SVC -->|"service impact"| IMP
+
+  subgraph COG["3. Cognitive Decision Reasoning"]
+    CT["Cognitive Twin"]
+    CONTEXT["Decision Context<br/>High urgency · 2 h window"]
+    REC["Decision Recommendation<br/>REC-HEAT-001 · confidence 0.86"]
+    EX["Explanation & Assurance<br/>evidence · provenance · confidence"]
+    CT -->|"has decision context"| CONTEXT
+    CT -->|"generates"| REC
+    REC -->|"justified by"| EX
+  end
+
+  E1 --> CONTEXT
+  E2 --> CONTEXT
+  E3 --> CONTEXT
+  E4 --> CONTEXT
+  IMP -->|"risk assessment"| CONTEXT
+  IMP -->|"risk context"| CT
+  EX -.->|"supported by"| E1
+  EX -.->|"supported by"| E2
+  EX -.->|"supported by"| E3
+  EX -.->|"supported by"| E4
+
+  subgraph ACT["4. Candidate & Selected Actions"]
+    A1["Defer Elastic Load<br/>Workload Management · 30 min"]
+    A2["Dispatch Battery<br/>Grid Brokering · 10 min"]
+  end
+
+  CONTEXT -->|"candidate"| A1
+  CONTEXT -->|"candidate"| A2
+  REC -->|"selected"| A1
+  REC -->|"selected"| A2
+
+  subgraph LOOP["5. Outcome, Prediction & Adaptation"]
+    OBS["Observation Base<br/>updated operational state"]
+    PRED["Prediction & Scenario Engine"]
+    A1 -->|"returns outcome data"| OBS
+    A2 -->|"returns outcome data"| OBS
+    OBS -->|"provides state"| PRED
+  end
+
+  PRED -->|"updated impact"| IMP
+  PRED -->|"updated scenario"| CT
+
+  classDef state fill:#E8F0F7,stroke:#4C6175,stroke-width:1px,color:#17212B;
+  classDef evidence fill:#EEF4EA,stroke:#5D7354,stroke-width:1px,color:#17212B;
+  classDef cognition fill:#F3EAF4,stroke:#765A79,stroke-width:1px,color:#17212B;
+  classDef action fill:#F8F0E5,stroke:#856A47,stroke-width:1px,color:#17212B;
+  classDef feedback fill:#ECECEC,stroke:#666666,stroke-width:1px,color:#17212B;
+
+  class H,DC,GRID,GC,SVC state;
+  class E1,E2,E3,E4,IMP evidence;
+  class CT,CONTEXT,REC,EX cognition;
+  class A1,A2 action;
+  class OBS,PRED feedback;

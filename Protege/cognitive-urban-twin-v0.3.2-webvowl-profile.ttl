@@ -1,0 +1,302 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/cognitive-urban-twin/webvowl-profile> a owl:Ontology ;
+    dc:title "Cognitive Urban Twin Ontology — WebVOWL Presentation Profile"@en ;
+    dcterms:title "Cognitive Urban Twin Ontology — WebVOWL Presentation Profile"@en ;
+    rdfs:label "Cognitive Urban Twin Ontology — WebVOWL Presentation Profile"@en ;
+    dc:description "A schema-level visualisation profile derived from Cognitive Urban Twin Ontology v0.3.2."@en ;
+    dcterms:description "A reduced, non-canonical profile for WebVOWL visualisation. It preserves the principal classes, subclass relationships and cross-domain object properties while excluding individuals, datatype properties, inverse duplicates, detailed leaf classes and the abstract object-property hierarchy."@en ;
+    dcterms:source <https://example.org/cognitive-urban-twin> ;
+    owl:versionInfo "0.3.2-webvowl-profile" ;
+    rdfs:comment "Presentation profile only. The authoritative ontology remains cognitive-urban-twin-v0.3.2-validation-clean.ttl."@en .
+
+cut:module a owl:AnnotationProperty ;
+    rdfs:label "ontology module"@en .
+
+# Core class model
+
+cut:AnticipatoryAction a owl:Class ;
+    rdfs:label "Anticipatory Action"@en ;
+    cut:module cut:FeedbackandAdaptationActionsModule .
+
+cut:CognitiveTwin a owl:Class ;
+    rdfs:label "Cognitive Twin"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:CoolingSystem a owl:Class ;
+    rdfs:label "Cooling System"@en ;
+    cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:DataCentre a owl:Class ;
+    rdfs:label "Data Centre"@en ;
+    rdfs:subClassOf cut:UrbanInfrastructure ;
+    cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:DataCentreFeedbackAction a owl:Class ;
+    rdfs:label "Data Centre Feedback Action"@en ;
+    rdfs:subClassOf cut:AnticipatoryAction ;
+    cut:module cut:FeedbackandAdaptationActionsModule .
+
+cut:DataCentreLoad a owl:Class ;
+    rdfs:label "Data Centre Load"@en ;
+    cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:DecisionBase a owl:Class ;
+    rdfs:label "Decision Base"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:DecisionContext a owl:Class ;
+    rdfs:label "Decision Context"@en ;
+    cut:module cut:DecisionContextModule .
+
+cut:DecisionEvidence a owl:Class ;
+    rdfs:label "Decision Evidence"@en ;
+    cut:module cut:DecisionContextModule .
+
+cut:DecisionRecommendation a owl:Class ;
+    rdfs:label "Decision Recommendation"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:ElectricityGrid a owl:Class ;
+    rdfs:label "Electricity Grid"@en ;
+    cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:EnvironmentalDataSource a owl:Class ;
+    rdfs:label "Environmental Data Source"@en ;
+    cut:module cut:EnvironmentalContextModule .
+
+cut:ExplanationAssurance a owl:Class ;
+    rdfs:label "Explanation Assurance"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:FlexibleResource a owl:Class ;
+    rdfs:label "Flexible Resource"@en ;
+    cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:GridConstraint a owl:Class ;
+    rdfs:label "Grid Constraint"@en ;
+    cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:ImpactForecast a owl:Class ;
+    rdfs:label "Impact Forecast"@en ;
+    cut:module cut:ImpactandRiskAssessmentModule .
+
+cut:KnowledgeBase a owl:Class ;
+    rdfs:label "Knowledge Base"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:MetOfficeDataHub a owl:Class ;
+    rdfs:label "Met Office Data Hub"@en ;
+    rdfs:subClassOf cut:EnvironmentalDataSource ;
+    cut:module cut:EnvironmentalContextModule .
+
+cut:ObservationBase a owl:Class ;
+    rdfs:label "Observation Base"@en ;
+    cut:module cut:CognitiveTwinModule .
+
+cut:PredictionScenarioEngine a owl:Class ;
+    rdfs:label "Prediction Scenario Engine"@en ;
+    cut:module cut:AnalyticsModule .
+
+cut:SensorNetwork a owl:Class ;
+    rdfs:label "Sensor Network"@en ;
+    rdfs:subClassOf cut:EnvironmentalDataSource ;
+    cut:module cut:EnvironmentalContextModule .
+
+cut:UrbanInfrastructure a owl:Class ;
+    rdfs:label "Urban Infrastructure"@en ;
+    cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:UrbanService a owl:Class ;
+    rdfs:label "Urban Service"@en ;
+    cut:module cut:UrbanServicesModule .
+
+cut:UrbanServiceFeedbackAction a owl:Class ;
+    rdfs:label "Urban Service Feedback Action"@en ;
+    rdfs:subClassOf cut:AnticipatoryAction ;
+    cut:module cut:FeedbackandAdaptationActionsModule .
+
+cut:WasteHeat a owl:Class ;
+    rdfs:label "Waste Heat"@en ;
+    cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:WeatherHazard a owl:Class ;
+    rdfs:label "Weather Hazard"@en ;
+    cut:module cut:EnvironmentalContextModule .
+
+# Principal semantic relationships
+
+cut:contains a owl:ObjectProperty ;
+    rdfs:label "contains"@en ;
+    rdfs:domain cut:UrbanInfrastructure ;
+    rdfs:range cut:DataCentre .
+
+cut:contributesDemandTo a owl:ObjectProperty ;
+    rdfs:label "contributes Demand To"@en ;
+    rdfs:domain cut:DataCentre ;
+    rdfs:range cut:GridConstraint .
+
+cut:dependsOn a owl:ObjectProperty ;
+    rdfs:label "depends On"@en ;
+    rdfs:domain cut:UrbanService ;
+    rdfs:range cut:DataCentre .
+
+cut:experiencesGridConstraint a owl:ObjectProperty ;
+    rdfs:label "experiences Grid Constraint"@en ;
+    rdfs:domain cut:ElectricityGrid ;
+    rdfs:range cut:GridConstraint .
+
+cut:feedsScenarioTo a owl:ObjectProperty ;
+    rdfs:label "feeds Scenario To"@en ;
+    rdfs:domain cut:PredictionScenarioEngine ;
+    rdfs:range cut:CognitiveTwin .
+
+cut:forecasts a owl:ObjectProperty ;
+    rdfs:label "forecasts"@en ;
+    rdfs:domain cut:MetOfficeDataHub ;
+    rdfs:range cut:WeatherHazard .
+
+cut:generatesRecommendation a owl:ObjectProperty ;
+    rdfs:label "generates Recommendation"@en ;
+    rdfs:domain cut:CognitiveTwin ;
+    rdfs:range cut:DecisionRecommendation .
+
+cut:hasAffectedInfrastructure a owl:ObjectProperty ;
+    rdfs:label "has affected infrastructure"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:DataCentre .
+
+cut:hasAffectedService a owl:ObjectProperty ;
+    rdfs:label "has affected service"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:UrbanService .
+
+cut:hasAvailableFlexibility a owl:ObjectProperty ;
+    rdfs:label "has available flexibility"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:FlexibleResource .
+
+cut:hasDecisionBase a owl:ObjectProperty ;
+    rdfs:label "has Decision Base"@en ;
+    rdfs:domain cut:CognitiveTwin ;
+    rdfs:range cut:DecisionBase .
+
+cut:hasDecisionContext a owl:ObjectProperty ;
+    rdfs:label "has decision context"@en ;
+    rdfs:domain cut:CognitiveTwin ;
+    rdfs:range cut:DecisionContext .
+
+cut:hasDecisionEvidence a owl:ObjectProperty ;
+    rdfs:label "has decision evidence"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:DecisionEvidence .
+
+cut:hasGridConstraint a owl:ObjectProperty ;
+    rdfs:label "has grid constraint"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:GridConstraint .
+
+cut:hasHazardInput a owl:ObjectProperty ;
+    rdfs:label "has Hazard Input"@en ;
+    rdfs:domain cut:ImpactForecast ;
+    rdfs:range cut:WeatherHazard .
+
+cut:hasKnowledgeBase a owl:ObjectProperty ;
+    rdfs:label "has Knowledge Base"@en ;
+    rdfs:domain cut:CognitiveTwin ;
+    rdfs:range cut:KnowledgeBase .
+
+cut:hasObservationBase a owl:ObjectProperty ;
+    rdfs:label "has Observation Base"@en ;
+    rdfs:domain cut:CognitiveTwin ;
+    rdfs:range cut:ObservationBase .
+
+cut:hasRiskAssessment a owl:ObjectProperty ;
+    rdfs:label "has risk assessment"@en ;
+    rdfs:domain cut:DecisionContext ;
+    rdfs:range cut:ImpactForecast .
+
+cut:hasServiceImpactTarget a owl:ObjectProperty ;
+    rdfs:label "has Service Impact Target"@en ;
+    rdfs:domain cut:UrbanService ;
+    rdfs:range cut:ImpactForecast .
+
+cut:hosts a owl:ObjectProperty ;
+    rdfs:label "hosts"@en ;
+    rdfs:domain cut:DataCentre ;
+    rdfs:range cut:DataCentreLoad .
+
+cut:justifiedBy a owl:ObjectProperty ;
+    rdfs:label "justified By"@en ;
+    rdfs:domain cut:DecisionRecommendation ;
+    rdfs:range cut:ExplanationAssurance .
+
+cut:observes a owl:ObjectProperty ;
+    rdfs:label "observes"@en ;
+    rdfs:domain cut:SensorNetwork ;
+    rdfs:range cut:WeatherHazard .
+
+cut:operates a owl:ObjectProperty ;
+    rdfs:label "operates"@en ;
+    rdfs:domain cut:DataCentre ;
+    rdfs:range cut:CoolingSystem .
+
+cut:producesImpactForecast a owl:ObjectProperty ;
+    rdfs:label "produces Impact Forecast"@en ;
+    rdfs:domain cut:PredictionScenarioEngine ;
+    rdfs:range cut:ImpactForecast .
+
+cut:producesWasteHeat a owl:ObjectProperty ;
+    rdfs:label "produces Waste Heat"@en ;
+    rdfs:domain cut:DataCentre ;
+    rdfs:range cut:WasteHeat .
+
+cut:providesModelTo a owl:ObjectProperty ;
+    rdfs:label "provides Model To"@en ;
+    rdfs:domain cut:KnowledgeBase ;
+    rdfs:range cut:PredictionScenarioEngine .
+
+cut:providesRiskContextTo a owl:ObjectProperty ;
+    rdfs:label "provides Risk Context To"@en ;
+    rdfs:domain cut:ImpactForecast ;
+    rdfs:range cut:CognitiveTwin .
+
+cut:providesStateTo a owl:ObjectProperty ;
+    rdfs:label "provides State To"@en ;
+    rdfs:domain cut:ObservationBase ;
+    rdfs:range cut:PredictionScenarioEngine .
+
+cut:recommendsAction a owl:ObjectProperty ;
+    rdfs:label "recommends Action"@en ;
+    rdfs:domain cut:DecisionRecommendation ;
+    rdfs:range cut:AnticipatoryAction .
+
+cut:returnsOutcomeDataTo a owl:ObjectProperty ;
+    rdfs:label "returns Outcome Data To"@en ;
+    rdfs:domain cut:AnticipatoryAction ;
+    rdfs:range cut:ObservationBase .
+
+cut:suppliesElectricityTo a owl:ObjectProperty ;
+    rdfs:label "supplies Electricity To"@en ;
+    rdfs:domain cut:ElectricityGrid ;
+    rdfs:range cut:DataCentre .
+
+cut:supportedByEvidence a owl:ObjectProperty ;
+    rdfs:label "supported by evidence"@en ;
+    rdfs:domain cut:ExplanationAssurance ;
+    rdfs:range cut:DecisionEvidence .
+
+cut:supportsRecommendation a owl:ObjectProperty ;
+    rdfs:label "supports Recommendation"@en ;
+    rdfs:domain cut:DecisionBase ;
+    rdfs:range cut:DecisionRecommendation .
+
+cut:threatens a owl:ObjectProperty ;
+    rdfs:label "threatens"@en ;
+    rdfs:domain cut:WeatherHazard ;
+    rdfs:range cut:DataCentre .

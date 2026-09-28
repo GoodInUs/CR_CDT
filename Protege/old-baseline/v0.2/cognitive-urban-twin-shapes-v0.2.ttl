@@ -1,0 +1,234 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Cognitive Twin
+#################################################################
+
+cut:CognitiveTwinShape
+    a sh:NodeShape ;
+    sh:targetClass cut:CognitiveTwin ;
+
+    sh:property [
+        sh:path cut:hasObservationBase ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cut:ObservationBase ;
+        sh:message "A CognitiveTwin must have exactly one ObservationBase."
+    ] ;
+
+    sh:property [
+        sh:path cut:hasKnowledgeBase ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cut:KnowledgeBase ;
+        sh:message "A CognitiveTwin must have exactly one KnowledgeBase."
+    ] ;
+
+    sh:property [
+        sh:path cut:hasDecisionBase ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cut:DecisionBase ;
+        sh:message "A CognitiveTwin must have exactly one DecisionBase."
+    ] .
+
+#################################################################
+# Decision Recommendation
+#################################################################
+
+cut:DecisionRecommendationShape
+    a sh:NodeShape ;
+    sh:targetClass cut:DecisionRecommendation ;
+
+    sh:property [
+        sh:path cut:recommendationId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "A DecisionRecommendation must have exactly one recommendationId."
+    ] ;
+
+    sh:property [
+        sh:path cut:confidence ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 1 ;
+        sh:message "Recommendation confidence must be a decimal between 0 and 1."
+    ] ;
+
+    sh:property [
+        sh:path cut:justifiedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cut:ExplanationAssurance ;
+        sh:message "A DecisionRecommendation must be justified by exactly one ExplanationAssurance record."
+    ] ;
+
+    sh:property [
+        sh:path cut:recommendsAction ;
+        sh:minCount 1 ;
+        sh:class cut:AnticipatoryAction ;
+        sh:message "A DecisionRecommendation must recommend at least one AnticipatoryAction."
+    ] .
+
+#################################################################
+# Data Centre
+#################################################################
+
+cut:DataCentreShape
+    a sh:NodeShape ;
+    sh:targetClass cut:DataCentre ;
+
+    sh:property [
+        sh:path cut:dataCentreId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "A DataCentre must have exactly one dataCentreId."
+    ] ;
+
+    sh:property [
+        sh:path cut:powerUsageEffectiveness ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minExclusive 0 ;
+        sh:message "powerUsageEffectiveness must be a positive decimal."
+    ] .
+
+#################################################################
+# Weather Hazard
+#################################################################
+
+cut:WeatherHazardShape
+    a sh:NodeShape ;
+    sh:targetClass cut:WeatherHazard ;
+
+    sh:property [
+        sh:path cut:hazardType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "A WeatherHazard must have exactly one hazardType."
+    ] ;
+
+    sh:property [
+        sh:path cut:severityLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "A WeatherHazard must have exactly one severityLevel."
+    ] ;
+
+    sh:property [
+        sh:path cut:expectedOnset ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime
+    ] ;
+
+    sh:property [
+        sh:path cut:expectedDuration ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:duration
+    ] .
+
+#################################################################
+# Impact Forecast
+#################################################################
+
+cut:ImpactForecastShape
+    a sh:NodeShape ;
+    sh:targetClass cut:ImpactForecast ;
+
+    sh:property [
+        sh:path cut:hasHazardInput ;
+        sh:minCount 1 ;
+        sh:class cut:WeatherHazard ;
+        sh:message "An ImpactForecast must reference at least one WeatherHazard."
+    ] ;
+
+    sh:property [
+        sh:path cut:impactLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path cut:confidence ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 1
+    ] .
+
+#################################################################
+# Urban Service
+#################################################################
+
+cut:UrbanServiceShape
+    a sh:NodeShape ;
+    sh:targetClass cut:UrbanService ;
+
+    sh:property [
+        sh:path cut:serviceId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path cut:minimumServiceLevel ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0
+    ] .
+
+#################################################################
+# Anticipatory Action
+#################################################################
+
+cut:AnticipatoryActionShape
+    a sh:NodeShape ;
+    sh:targetClass cut:AnticipatoryAction ;
+
+    sh:property [
+        sh:path cut:actionId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path cut:requiredLeadTime ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:duration
+    ] .
+
+#################################################################
+# Relationship-level expectations
+#################################################################
+
+cut:ThreatenedDataCentreShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf cut:threatens ;
+
+    sh:property [
+        sh:path cut:threatens ;
+        sh:class cut:DataCentre ;
+        sh:message "The target of threatens must be a DataCentre."
+    ] .
+
+cut:ServiceDependencyShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf cut:dependsOn ;
+
+    sh:property [
+        sh:path cut:dependsOn ;
+        sh:class cut:DataCentre ;
+        sh:message "UrbanService dependsOn relationships must target DataCentre instances."
+    ] .

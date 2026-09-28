@@ -1,0 +1,25 @@
+PREFIX cut: <https://example.org/cognitive-urban-twin#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?hazard ?dataCentre ?service ?impact ?context ?recommendation ?action ?observationBase ?engine ?twin
+WHERE {
+  BIND(cut:CognitiveTwin_City_01 AS ?twin)
+
+  ?hazard cut:threatens ?dataCentre .
+  ?service cut:dependsOn ?dataCentre .
+  ?impact cut:hasHazardInput ?hazard .
+
+  ?twin cut:hasDecisionContext ?context ;
+        cut:generatesRecommendation ?recommendation .
+
+  ?context cut:hasAffectedInfrastructure ?dataCentre ;
+           cut:hasAffectedService ?service ;
+           cut:hasRiskAssessment ?impact ;
+           cut:hasCandidateAction ?action .
+
+  ?recommendation cut:selectedAction ?action .
+  ?action cut:returnsOutcomeDataTo ?observationBase .
+  ?observationBase cut:providesStateTo ?engine .
+  ?engine cut:feedsScenarioTo ?twin .
+}

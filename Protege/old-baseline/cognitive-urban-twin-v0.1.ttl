@@ -1,0 +1,683 @@
+@prefix cut: <https://example.org/cognitive-urban-twin#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+
+<https://example.org/cognitive-urban-twin> a owl:Ontology ;
+  rdfs:label "Cognitive Urban Twin Ontology"@en ;
+  rdfs:comment "Protégé starter ontology derived from the Cognitive Urban Twin conceptual UML model."@en ;
+  owl:versionInfo "0.1.0" .
+
+cut:module a owl:AnnotationProperty .
+cut:umlStereotype a owl:AnnotationProperty .
+cut:umlOperation a owl:AnnotationProperty .
+cut:isAbstract a owl:AnnotationProperty .
+
+cut:EnvironmentalContextModule a owl:NamedIndividual ; rdfs:label 'Environmental Context'@en .
+cut:ImpactandRiskAssessmentModule a owl:NamedIndividual ; rdfs:label 'Impact and Risk Assessment'@en .
+cut:PhysicalUrbanInfrastructureModule a owl:NamedIndividual ; rdfs:label 'Physical Urban Infrastructure'@en .
+cut:UrbanServicesModule a owl:NamedIndividual ; rdfs:label 'Urban Services'@en .
+cut:EnergyandFlexibilitySystemModule a owl:NamedIndividual ; rdfs:label 'Energy and Flexibility System'@en .
+cut:AnalyticsModule a owl:NamedIndividual ; rdfs:label 'Analytics'@en .
+cut:CognitiveTwinModule a owl:NamedIndividual ; rdfs:label 'Cognitive Twin'@en .
+cut:FeedbackandAdaptationActionsModule a owl:NamedIndividual ; rdfs:label 'Feedback and Adaptation Actions'@en .
+
+cut:WeatherHazard a owl:Class ;
+  rdfs:label "Weather Hazard"@en ;
+  cut:module cut:EnvironmentalContextModule ;
+  cut:isAbstract "true"^^xsd:boolean .
+
+cut:ExtremeHeat a owl:Class ;
+  rdfs:subClassOf cut:WeatherHazard ;
+  rdfs:label "Extreme Heat"@en ;
+  cut:module cut:EnvironmentalContextModule .
+
+cut:Flood a owl:Class ;
+  rdfs:subClassOf cut:WeatherHazard ;
+  rdfs:label "Flood"@en ;
+  cut:module cut:EnvironmentalContextModule .
+
+cut:Storm a owl:Class ;
+  rdfs:subClassOf cut:WeatherHazard ;
+  rdfs:label "Storm"@en ;
+  cut:module cut:EnvironmentalContextModule .
+
+cut:Drought a owl:Class ;
+  rdfs:subClassOf cut:WeatherHazard ;
+  rdfs:label "Drought"@en ;
+  cut:module cut:EnvironmentalContextModule .
+
+cut:ColdSpell a owl:Class ;
+  rdfs:subClassOf cut:WeatherHazard ;
+  rdfs:label "Cold Spell"@en ;
+  cut:module cut:EnvironmentalContextModule .
+
+cut:EnvironmentalDataSource a owl:Class ;
+  rdfs:label "Environmental Data Source"@en ;
+  cut:module cut:EnvironmentalContextModule ;
+  cut:umlStereotype "interface" ;
+  cut:umlOperation "getForecasts()" ;
+  cut:umlOperation "getObservations()" .
+
+cut:MetOfficeDataHub a owl:Class ;
+  rdfs:subClassOf cut:EnvironmentalDataSource ;
+  rdfs:label "Met Office Data Hub"@en ;
+  cut:module cut:EnvironmentalContextModule ;
+  cut:umlStereotype "external API" ;
+  cut:umlOperation "getAtmosphericModel()" ;
+  cut:umlOperation "getWeatherWarnings()" .
+
+cut:SensorNetwork a owl:Class ;
+  rdfs:subClassOf cut:EnvironmentalDataSource ;
+  rdfs:label "Sensor Network"@en ;
+  cut:module cut:EnvironmentalContextModule ;
+  cut:umlStereotype "SOSA/SSN" ;
+  cut:umlOperation "getObservation()" .
+
+cut:VulnerabilityProfile a owl:Class ;
+  rdfs:label "Vulnerability Profile"@en ;
+  cut:module cut:ImpactandRiskAssessmentModule .
+
+cut:ExposureProfile a owl:Class ;
+  rdfs:label "Exposure Profile"@en ;
+  cut:module cut:ImpactandRiskAssessmentModule .
+
+cut:ImpactForecast a owl:Class ;
+  rdfs:label "Impact Forecast"@en ;
+  cut:module cut:ImpactandRiskAssessmentModule ;
+  cut:umlStereotype "assessment" ;
+  cut:umlOperation "calculateImpact()" .
+
+cut:UrbanInfrastructure a owl:Class ;
+  rdfs:label "Urban Infrastructure"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule ;
+  cut:umlStereotype "CityGML 3.0" .
+
+cut:DataCentre a owl:Class ;
+  rdfs:subClassOf cut:UrbanInfrastructure ;
+  rdfs:label "Data Centre"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule ;
+  cut:umlStereotype "Brick Schema" ;
+  cut:umlOperation "getTelemetry()" .
+
+cut:CoolingSystem a owl:Class ;
+  rdfs:label "Cooling System"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:WaterSupply a owl:Class ;
+  rdfs:label "Water Supply"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:WasteHeat a owl:Class ;
+  rdfs:label "Waste Heat"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:DataCentreLoad a owl:Class ;
+  rdfs:label "Data Centre Load"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule ;
+  cut:isAbstract "true"^^xsd:boolean .
+
+cut:ElasticDataLoad a owl:Class ;
+  rdfs:subClassOf cut:DataCentreLoad ;
+  rdfs:label "Elastic Data Load"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule ;
+  cut:umlOperation "defer()" ;
+  cut:umlOperation "throttle()" .
+
+cut:RigidDataLoad a owl:Class ;
+  rdfs:subClassOf cut:DataCentreLoad ;
+  rdfs:label "Rigid Data Load"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule .
+
+cut:DistrictHeatingNetwork a owl:Class ;
+  rdfs:label "District Heating Network"@en ;
+  cut:module cut:PhysicalUrbanInfrastructureModule ;
+  cut:umlOperation "receiveWasteHeat()" .
+
+cut:UrbanService a owl:Class ;
+  rdfs:label "Urban Service"@en ;
+  cut:module cut:UrbanServicesModule .
+
+cut:ServiceType a owl:Class ;
+  rdfs:label "Service Type"@en ;
+  cut:module cut:UrbanServicesModule ;
+  cut:umlStereotype "enumeration" .
+
+cut:CriticalityLevel a owl:Class ;
+  rdfs:label "Criticality Level"@en ;
+  cut:module cut:UrbanServicesModule ;
+  cut:umlStereotype "enumeration" .
+
+cut:CapabilityState a owl:Class ;
+  rdfs:label "Capability State"@en ;
+  cut:module cut:UrbanServicesModule ;
+  cut:umlStereotype "enumeration" .
+
+cut:ElectricityGrid a owl:Class ;
+  rdfs:label "Electricity Grid"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule ;
+  cut:umlStereotype "UKPN Open Data" ;
+  cut:umlOperation "getGridState()" .
+
+cut:GridConstraint a owl:Class ;
+  rdfs:label "Grid Constraint"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:FlexibleResource a owl:Class ;
+  rdfs:label "Flexible Resource"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule ;
+  cut:isAbstract "true"^^xsd:boolean ;
+  cut:umlOperation "activate()" .
+
+cut:BatteryStorage a owl:Class ;
+  rdfs:subClassOf cut:FlexibleResource ;
+  rdfs:label "Battery Storage"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:ComputeFlexibility a owl:Class ;
+  rdfs:subClassOf cut:FlexibleResource ;
+  rdfs:label "Compute Flexibility"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:ElectricVehicleFleet a owl:Class ;
+  rdfs:subClassOf cut:FlexibleResource ;
+  rdfs:label "Electric Vehicle Fleet"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule .
+
+cut:CarbonIntensityService a owl:Class ;
+  rdfs:label "Carbon Intensity Service"@en ;
+  cut:module cut:EnergyandFlexibilitySystemModule ;
+  cut:umlStereotype "NESO external API" ;
+  cut:umlOperation "getCarbonForecast()" .
+
+cut:PredictionScenarioEngine a owl:Class ;
+  rdfs:label "Prediction Scenario Engine"@en ;
+  cut:module cut:AnalyticsModule ;
+  cut:umlStereotype "analytics" ;
+  cut:umlOperation "forecastWeatherImpact()" ;
+  cut:umlOperation "forecastServiceRisk()" ;
+  cut:umlOperation "modelPropagation()" ;
+  cut:umlOperation "generateScenarios()" .
+
+cut:CognitiveTwin a owl:Class ;
+  rdfs:label "Cognitive Twin"@en ;
+  cut:module cut:CognitiveTwinModule ;
+  cut:umlStereotype "decision-support system" ;
+  cut:umlOperation "reasonOverState()" ;
+  cut:umlOperation "optimiseResourceAllocation()" ;
+  cut:umlOperation "explainRecommendation()" .
+
+cut:ObservationBase a owl:Class ;
+  rdfs:label "Observation Base"@en ;
+  cut:module cut:CognitiveTwinModule ;
+  cut:umlStereotype "integrated state store" ;
+  cut:umlOperation "storeObservation()" ;
+  cut:umlOperation "getCurrentState()" ;
+  cut:umlOperation "getHistoricalState()" .
+
+cut:KnowledgeBase a owl:Class ;
+  rdfs:label "Knowledge Base"@en ;
+  cut:module cut:CognitiveTwinModule ;
+  cut:umlStereotype "ontology and knowledge graph" ;
+  cut:umlOperation "validateSemanticConsistency()" ;
+  cut:umlOperation "inferDependencies()" ;
+  cut:umlOperation "getDependencyGraph()" .
+
+cut:DecisionBase a owl:Class ;
+  rdfs:label "Decision Base"@en ;
+  cut:module cut:CognitiveTwinModule ;
+  cut:umlStereotype "policy and action store" ;
+  cut:umlOperation "selectAction()" ;
+  cut:umlOperation "recordDecision()" .
+
+cut:DecisionRecommendation a owl:Class ;
+  rdfs:label "Decision Recommendation"@en ;
+  cut:module cut:CognitiveTwinModule .
+
+cut:ExplanationAssurance a owl:Class ;
+  rdfs:label "Explanation Assurance"@en ;
+  cut:module cut:CognitiveTwinModule ;
+  cut:umlStereotype "assurance" ;
+  cut:umlOperation "traceEvidence()" .
+
+cut:AnticipatoryAction a owl:Class ;
+  rdfs:label "Anticipatory Action"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:isAbstract "true"^^xsd:boolean ;
+  cut:umlOperation "execute()" ;
+  cut:umlOperation "evaluateOutcome()" .
+
+cut:DataCentreFeedbackAction a owl:Class ;
+  rdfs:subClassOf cut:AnticipatoryAction ;
+  rdfs:label "Data Centre Feedback Action"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:isAbstract "true"^^xsd:boolean .
+
+cut:UrbanServiceFeedbackAction a owl:Class ;
+  rdfs:subClassOf cut:AnticipatoryAction ;
+  rdfs:label "Urban Service Feedback Action"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:isAbstract "true"^^xsd:boolean .
+
+cut:WorkloadManagement a owl:Class ;
+  rdfs:subClassOf cut:DataCentreFeedbackAction ;
+  rdfs:label "Workload Management"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "deferElasticLoad()" ;
+  cut:umlOperation "throttleComputeLoad()" ;
+  cut:umlOperation "migrateWorkload()" .
+
+cut:GridBrokering a owl:Class ;
+  rdfs:subClassOf cut:DataCentreFeedbackAction ;
+  rdfs:label "Grid Brokering"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "dispatchBattery()" ;
+  cut:umlOperation "dispatchVehicleToGrid()" ;
+  cut:umlOperation "requestDemandResponse()" .
+
+cut:CoolingWaterManagement a owl:Class ;
+  rdfs:subClassOf cut:DataCentreFeedbackAction ;
+  rdfs:label "Cooling Water Management"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "limitEvaporativeUse()" ;
+  cut:umlOperation "switchToDryCooling()" .
+
+cut:RecoveryPlanning a owl:Class ;
+  rdfs:subClassOf cut:DataCentreFeedbackAction ;
+  rdfs:label "Recovery Planning"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "planRampUp()" ;
+  cut:umlOperation "sequenceRestoration()" .
+
+cut:DistrictHeatingControl a owl:Class ;
+  rdfs:subClassOf cut:DataCentreFeedbackAction ;
+  rdfs:label "District Heating Control"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "allocateWasteHeat()" .
+
+cut:CivicEmergencyResponse a owl:Class ;
+  rdfs:subClassOf cut:UrbanServiceFeedbackAction ;
+  rdfs:label "Civic Emergency Response"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "publishHazardWarning()" ;
+  cut:umlOperation "preDeployFloodBarriers()" ;
+  cut:umlOperation "openEmergencyFacilities()" .
+
+cut:SocioEconomicResponse a owl:Class ;
+  rdfs:subClassOf cut:UrbanServiceFeedbackAction ;
+  rdfs:label "Socio Economic Response"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "distributeCashTransfer()" ;
+  cut:umlOperation "prioritiseVulnerableGroups()" .
+
+cut:ServiceModeControl a owl:Class ;
+  rdfs:subClassOf cut:UrbanServiceFeedbackAction ;
+  rdfs:label "Service Mode Control"@en ;
+  cut:module cut:FeedbackandAdaptationActionsModule ;
+  cut:umlOperation "degradeGracefully()" ;
+  cut:umlOperation "restoreService()" .
+
+cut:forecasts a owl:ObjectProperty ;
+  rdfs:label "forecasts"@en ;
+  rdfs:domain cut:MetOfficeDataHub ;
+  rdfs:range cut:WeatherHazard .
+
+cut:observes a owl:ObjectProperty ;
+  rdfs:label "observes"@en ;
+  rdfs:domain cut:SensorNetwork ;
+  rdfs:range cut:WeatherHazard .
+
+cut:hasHazardInput a owl:ObjectProperty ;
+  rdfs:label "has Hazard Input"@en ;
+  rdfs:domain cut:ImpactForecast ;
+  rdfs:range cut:WeatherHazard .
+
+cut:contains a owl:ObjectProperty ;
+  rdfs:label "contains"@en ;
+  rdfs:domain cut:UrbanInfrastructure ;
+  rdfs:range cut:DataCentre .
+
+cut:operates a owl:ObjectProperty ;
+  rdfs:label "operates"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range cut:CoolingSystem .
+
+cut:hosts a owl:ObjectProperty ;
+  rdfs:label "hosts"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range cut:DataCentreLoad .
+
+cut:producesWasteHeat a owl:ObjectProperty ;
+  rdfs:label "produces Waste Heat"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range cut:WasteHeat .
+
+cut:suppliesHeatTo a owl:ObjectProperty ;
+  rdfs:label "supplies Heat To"@en ;
+  rdfs:domain cut:WasteHeat ;
+  rdfs:range cut:DistrictHeatingNetwork .
+
+cut:consumesWaterFrom a owl:ObjectProperty ;
+  rdfs:label "consumes Water From"@en ;
+  rdfs:domain cut:CoolingSystem ;
+  rdfs:range cut:WaterSupply .
+
+cut:threatens a owl:ObjectProperty ;
+  rdfs:label "threatens"@en ;
+  rdfs:domain cut:WeatherHazard ;
+  rdfs:range cut:DataCentre .
+
+cut:dependsOn a owl:ObjectProperty ;
+  rdfs:label "depends On"@en ;
+  rdfs:domain cut:UrbanService ;
+  rdfs:range cut:DataCentre .
+
+cut:supportsService a owl:ObjectProperty ;
+  rdfs:label "supports Service"@en ;
+  rdfs:domain cut:RigidDataLoad ;
+  rdfs:range cut:UrbanService .
+
+cut:hasServiceImpactTarget a owl:ObjectProperty ;
+  rdfs:label "has Service Impact Target"@en ;
+  rdfs:domain cut:UrbanService ;
+  rdfs:range cut:ImpactForecast .
+
+cut:experiencesGridConstraint a owl:ObjectProperty ;
+  rdfs:label "experiences Grid Constraint"@en ;
+  rdfs:domain cut:ElectricityGrid ;
+  rdfs:range cut:GridConstraint .
+
+cut:suppliesElectricityTo a owl:ObjectProperty ;
+  rdfs:label "supplies Electricity To"@en ;
+  rdfs:domain cut:ElectricityGrid ;
+  rdfs:range cut:DataCentre .
+
+cut:contributesDemandTo a owl:ObjectProperty ;
+  rdfs:label "contributes Demand To"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range cut:GridConstraint .
+
+cut:providesComputeFlexibility a owl:ObjectProperty ;
+  rdfs:label "provides Compute Flexibility"@en ;
+  rdfs:domain cut:ElasticDataLoad ;
+  rdfs:range cut:ComputeFlexibility .
+
+cut:hasObservationBase a owl:ObjectProperty ;
+  rdfs:label "has Observation Base"@en ;
+  rdfs:domain cut:CognitiveTwin ;
+  rdfs:range cut:ObservationBase .
+
+cut:hasKnowledgeBase a owl:ObjectProperty ;
+  rdfs:label "has Knowledge Base"@en ;
+  rdfs:domain cut:CognitiveTwin ;
+  rdfs:range cut:KnowledgeBase .
+
+cut:hasDecisionBase a owl:ObjectProperty ;
+  rdfs:label "has Decision Base"@en ;
+  rdfs:domain cut:CognitiveTwin ;
+  rdfs:range cut:DecisionBase .
+
+cut:generatesRecommendation a owl:ObjectProperty ;
+  rdfs:label "generates Recommendation"@en ;
+  rdfs:domain cut:CognitiveTwin ;
+  rdfs:range cut:DecisionRecommendation .
+
+cut:supportsRecommendation a owl:ObjectProperty ;
+  rdfs:label "supports Recommendation"@en ;
+  rdfs:domain cut:DecisionBase ;
+  rdfs:range cut:DecisionRecommendation .
+
+cut:justifiedBy a owl:ObjectProperty ;
+  rdfs:label "justified By"@en ;
+  rdfs:domain cut:DecisionRecommendation ;
+  rdfs:range cut:ExplanationAssurance .
+
+cut:providesStateTo a owl:ObjectProperty ;
+  rdfs:label "provides State To"@en ;
+  rdfs:domain cut:ObservationBase ;
+  rdfs:range cut:PredictionScenarioEngine .
+
+cut:providesModelTo a owl:ObjectProperty ;
+  rdfs:label "provides Model To"@en ;
+  rdfs:domain cut:KnowledgeBase ;
+  rdfs:range cut:PredictionScenarioEngine .
+
+cut:producesImpactForecast a owl:ObjectProperty ;
+  rdfs:label "produces Impact Forecast"@en ;
+  rdfs:domain cut:PredictionScenarioEngine ;
+  rdfs:range cut:ImpactForecast .
+
+cut:feedsScenarioTo a owl:ObjectProperty ;
+  rdfs:label "feeds Scenario To"@en ;
+  rdfs:domain cut:PredictionScenarioEngine ;
+  rdfs:range cut:CognitiveTwin .
+
+cut:providesRiskContextTo a owl:ObjectProperty ;
+  rdfs:label "provides Risk Context To"@en ;
+  rdfs:domain cut:ImpactForecast ;
+  rdfs:range cut:CognitiveTwin .
+
+cut:recommendsAction a owl:ObjectProperty ;
+  rdfs:label "recommends Action"@en ;
+  rdfs:domain cut:DecisionRecommendation ;
+  rdfs:range cut:AnticipatoryAction .
+
+cut:returnsOutcomeDataTo a owl:ObjectProperty ;
+  rdfs:label "returns Outcome Data To"@en ;
+  rdfs:domain cut:AnticipatoryAction ;
+  rdfs:range cut:ObservationBase .
+
+cut:hazardType a owl:DatatypeProperty ;
+  rdfs:label "hazard Type"@en ;
+  rdfs:domain cut:WeatherHazard ;
+  rdfs:range xsd:string .
+
+cut:severityLevel a owl:DatatypeProperty ;
+  rdfs:label "severity Level"@en ;
+  rdfs:domain cut:WeatherHazard ;
+  rdfs:range xsd:string .
+
+cut:expectedOnset a owl:DatatypeProperty ;
+  rdfs:label "expected Onset"@en ;
+  rdfs:domain cut:WeatherHazard ;
+  rdfs:range xsd:dateTime .
+
+cut:expectedDuration a owl:DatatypeProperty ;
+  rdfs:label "expected Duration"@en ;
+  rdfs:domain cut:WeatherHazard ;
+  rdfs:range xsd:duration .
+
+cut:maximumTemperature a owl:DatatypeProperty ;
+  rdfs:label "maximum Temperature"@en ;
+  rdfs:domain cut:ExtremeHeat ;
+  rdfs:range xsd:decimal .
+
+cut:predictedDepth a owl:DatatypeProperty ;
+  rdfs:label "predicted Depth"@en ;
+  rdfs:domain cut:Flood ;
+  rdfs:range xsd:decimal .
+
+cut:floodZone a owl:DatatypeProperty ;
+  rdfs:label "flood Zone"@en ;
+  rdfs:domain cut:Flood ;
+  rdfs:range xsd:string .
+
+cut:windSpeed a owl:DatatypeProperty ;
+  rdfs:label "wind Speed"@en ;
+  rdfs:domain cut:Storm ;
+  rdfs:range xsd:decimal .
+
+cut:occurrenceProbability a owl:DatatypeProperty ;
+  rdfs:label "occurrence Probability"@en ;
+  rdfs:domain cut:Storm ;
+  rdfs:range xsd:decimal .
+
+cut:waterDeficit a owl:DatatypeProperty ;
+  rdfs:label "water Deficit"@en ;
+  rdfs:domain cut:Drought ;
+  rdfs:range xsd:decimal .
+
+cut:dryPeriodDuration a owl:DatatypeProperty ;
+  rdfs:label "dry Period Duration"@en ;
+  rdfs:domain cut:Drought ;
+  rdfs:range xsd:duration .
+
+cut:minimumTemperature a owl:DatatypeProperty ;
+  rdfs:label "minimum Temperature"@en ;
+  rdfs:domain cut:ColdSpell ;
+  rdfs:range xsd:decimal .
+
+cut:populationDemographics a owl:DatatypeProperty ;
+  rdfs:label "population Demographics"@en ;
+  rdfs:domain cut:VulnerabilityProfile ;
+  rdfs:range xsd:string .
+
+cut:infrastructureAge a owl:DatatypeProperty ;
+  rdfs:label "infrastructure Age"@en ;
+  rdfs:domain cut:VulnerabilityProfile ;
+  rdfs:range xsd:integer .
+
+cut:vulnerabilityScore a owl:DatatypeProperty ;
+  rdfs:label "vulnerability Score"@en ;
+  rdfs:domain cut:VulnerabilityProfile ;
+  rdfs:range xsd:decimal .
+
+cut:exposedPopulation a owl:DatatypeProperty ;
+  rdfs:label "exposed Population"@en ;
+  rdfs:domain cut:ExposureProfile ;
+  rdfs:range xsd:integer .
+
+cut:assetsInHazardZone a owl:DatatypeProperty ;
+  rdfs:label "assets In Hazard Zone"@en ;
+  rdfs:domain cut:ExposureProfile ;
+  rdfs:range xsd:integer .
+
+cut:exposedAssetValue a owl:DatatypeProperty ;
+  rdfs:label "exposed Asset Value"@en ;
+  rdfs:domain cut:ExposureProfile ;
+  rdfs:range xsd:decimal .
+
+cut:impactLevel a owl:DatatypeProperty ;
+  rdfs:label "impact Level"@en ;
+  rdfs:domain cut:ImpactForecast ;
+  rdfs:range xsd:string .
+
+cut:expectedSocioEconomicCost a owl:DatatypeProperty ;
+  rdfs:label "expected Socio Economic Cost"@en ;
+  rdfs:domain cut:ImpactForecast ;
+  rdfs:range xsd:decimal .
+
+cut:confidence a owl:DatatypeProperty ;
+  rdfs:label "confidence"@en ;
+  rdfs:domain cut:ImpactForecast ;
+  rdfs:range xsd:decimal .
+
+cut:dataCentreId a owl:DatatypeProperty ;
+  rdfs:label "data Centre Id"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range xsd:string .
+
+cut:powerUsageEffectiveness a owl:DatatypeProperty ;
+  rdfs:label "power Usage Effectiveness"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range xsd:decimal .
+
+cut:hazardExposure a owl:DatatypeProperty ;
+  rdfs:label "hazard Exposure"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range xsd:string .
+
+cut:maximumPowerDemand a owl:DatatypeProperty ;
+  rdfs:label "maximum Power Demand"@en ;
+  rdfs:domain cut:DataCentre ;
+  rdfs:range xsd:decimal .
+
+cut:serviceId a owl:DatatypeProperty ;
+  rdfs:label "service Id"@en ;
+  rdfs:domain cut:UrbanService ;
+  rdfs:range xsd:string .
+
+cut:minimumServiceLevel a owl:DatatypeProperty ;
+  rdfs:label "minimum Service Level"@en ;
+  rdfs:domain cut:UrbanService ;
+  rdfs:range xsd:decimal .
+
+cut:availableHeadroom a owl:DatatypeProperty ;
+  rdfs:label "available Headroom"@en ;
+  rdfs:domain cut:ElectricityGrid ;
+  rdfs:range xsd:decimal .
+
+cut:reserveMargin a owl:DatatypeProperty ;
+  rdfs:label "reserve Margin"@en ;
+  rdfs:domain cut:ElectricityGrid ;
+  rdfs:range xsd:decimal .
+
+cut:operatingState a owl:DatatypeProperty ;
+  rdfs:label "operating State"@en ;
+  rdfs:domain cut:ElectricityGrid ;
+  rdfs:range xsd:string .
+
+cut:recommendationId a owl:DatatypeProperty ;
+  rdfs:label "recommendation Id"@en ;
+  rdfs:domain cut:DecisionRecommendation ;
+  rdfs:range xsd:string .
+
+cut:rationale a owl:DatatypeProperty ;
+  rdfs:label "rationale"@en ;
+  rdfs:domain cut:DecisionRecommendation ;
+  rdfs:range xsd:string .
+
+cut:decisionDeadline a owl:DatatypeProperty ;
+  rdfs:label "decision Deadline"@en ;
+  rdfs:domain cut:DecisionRecommendation ;
+  rdfs:range xsd:dateTime .
+
+cut:provenance a owl:DatatypeProperty ;
+  rdfs:label "provenance"@en ;
+  rdfs:domain cut:ExplanationAssurance ;
+  rdfs:range xsd:string .
+
+cut:actionId a owl:DatatypeProperty ;
+  rdfs:label "action Id"@en ;
+  rdfs:domain cut:AnticipatoryAction ;
+  rdfs:range xsd:string .
+
+cut:requiredLeadTime a owl:DatatypeProperty ;
+  rdfs:label "required Lead Time"@en ;
+  rdfs:domain cut:AnticipatoryAction ;
+  rdfs:range xsd:duration .
+
+cut:TrafficManagement a cut:ServiceType .
+cut:HealthcareServices a cut:ServiceType .
+cut:EmergencyResponse a cut:ServiceType .
+cut:PublicSafety a cut:ServiceType .
+cut:EnergyManagement a cut:ServiceType .
+cut:Communications a cut:ServiceType .
+cut:OtherCritical a cut:ServiceType .
+cut:Critical a cut:CriticalityLevel .
+cut:High a cut:CriticalityLevel .
+cut:Medium a cut:CriticalityLevel .
+cut:Low a cut:CriticalityLevel .
+cut:Normal a cut:CapabilityState .
+cut:Degraded a cut:CapabilityState .
+cut:Failed a cut:CapabilityState .
+cut:Recovering a cut:CapabilityState .
+
+# Selected UML cardinalities represented as OWL restrictions
+cut:CognitiveTwin rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty cut:hasObservationBase ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass cut:ObservationBase ],
+  [ a owl:Restriction ; owl:onProperty cut:hasKnowledgeBase ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass cut:KnowledgeBase ],
+  [ a owl:Restriction ; owl:onProperty cut:hasDecisionBase ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass cut:DecisionBase ] .
+
+cut:DecisionRecommendation rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty cut:justifiedBy ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass cut:ExplanationAssurance ],
+  [ a owl:Restriction ; owl:onProperty cut:recommendsAction ;
+    owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass cut:AnticipatoryAction ] .
+
+# Note: UML operations are annotations only. Closed-world validation belongs in SHACL.

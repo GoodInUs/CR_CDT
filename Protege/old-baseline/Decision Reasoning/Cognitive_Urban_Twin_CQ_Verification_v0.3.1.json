@@ -1,0 +1,399 @@
+[
+  {
+    "cq": "CQ01",
+    "question": "What hazard is currently threatening critical urban infrastructure?",
+    "classes": [
+      "WeatherHazard",
+      "DataCentre"
+    ],
+    "properties": [
+      "hazardType",
+      "severityLevel",
+      "threatens"
+    ],
+    "expected": "\u22651 hazard",
+    "query_file": "CQ01_current_hazard.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ02",
+    "question": "Which infrastructure assets are threatened by the hazard?",
+    "classes": [
+      "WeatherHazard",
+      "DataCentre"
+    ],
+    "properties": [
+      "threatens"
+    ],
+    "expected": "DataCentre_East_01",
+    "query_file": "CQ02_threatened_infrastructure.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ03",
+    "question": "What evidence supports identification of the hazard?",
+    "classes": [
+      "DecisionEvidence",
+      "WeatherHazard"
+    ],
+    "properties": [
+      "evidenceAbout",
+      "evidenceConfidence"
+    ],
+    "expected": "Evidence_HeatForecast_01",
+    "query_file": "CQ03_hazard_evidence.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ04",
+    "question": "What infrastructure telemetry is available for the affected asset?",
+    "classes": [
+      "DecisionEvidence",
+      "DataCentre"
+    ],
+    "properties": [
+      "evidenceAbout",
+      "evidenceConfidence"
+    ],
+    "expected": "Evidence_DataCentreTelemetry_01",
+    "query_file": "CQ04_infrastructure_evidence.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ05",
+    "question": "What grid constraint is associated with the affected infrastructure?",
+    "classes": [
+      "DataCentre",
+      "GridConstraint"
+    ],
+    "properties": [
+      "contributesDemandTo"
+    ],
+    "expected": "GridConstraint_East_01",
+    "query_file": "CQ05_grid_constraint.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ06",
+    "question": "Which electricity grid supplies the affected infrastructure?",
+    "classes": [
+      "ElectricityGrid",
+      "DataCentre"
+    ],
+    "properties": [
+      "suppliesElectricityTo"
+    ],
+    "expected": "ElectricityGrid_East",
+    "query_file": "CQ06_grid_supply.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ07",
+    "question": "Which urban services depend upon the affected infrastructure?",
+    "classes": [
+      "UrbanService",
+      "DataCentre"
+    ],
+    "properties": [
+      "dependsOn"
+    ],
+    "expected": "2 services",
+    "query_file": "CQ07_dependent_services.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ08",
+    "question": "What impact is forecast for the hazard?",
+    "classes": [
+      "ImpactForecast",
+      "WeatherHazard"
+    ],
+    "properties": [
+      "hasHazardInput",
+      "impactLevel",
+      "confidence"
+    ],
+    "expected": "ImpactForecast_Heatwave_01",
+    "query_file": "CQ08_impact_forecast.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ09",
+    "question": "Which services are expected to be affected?",
+    "classes": [
+      "DecisionContext",
+      "UrbanService"
+    ],
+    "properties": [
+      "hasAffectedService"
+    ],
+    "expected": "2 services",
+    "query_file": "CQ09_affected_services.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ10",
+    "question": "What evidence supports the impact assessment?",
+    "classes": [
+      "DecisionContext",
+      "DecisionEvidence"
+    ],
+    "properties": [
+      "hasDecisionEvidence"
+    ],
+    "expected": "4 evidence items",
+    "query_file": "CQ10_impact_evidence.rq",
+    "observed_rows": 4,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ11",
+    "question": "What is the current decision context?",
+    "classes": [
+      "CognitiveTwin",
+      "DecisionContext"
+    ],
+    "properties": [
+      "hasDecisionContext"
+    ],
+    "expected": "DecisionContext_Heatwave_01",
+    "query_file": "CQ11_current_decision_context.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ12",
+    "question": "What infrastructure and services are included in that context?",
+    "classes": [
+      "DecisionContext",
+      "DataCentre",
+      "UrbanService"
+    ],
+    "properties": [
+      "hasAffectedInfrastructure",
+      "hasAffectedService"
+    ],
+    "expected": "1 infrastructure + 2 services",
+    "query_file": "CQ12_decision_scope.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ13",
+    "question": "What evidence is available to support the decision?",
+    "classes": [
+      "DecisionContext",
+      "DecisionEvidence"
+    ],
+    "properties": [
+      "hasDecisionEvidence",
+      "evidenceAbout"
+    ],
+    "expected": "4 evidence items",
+    "query_file": "CQ13_decision_evidence.rq",
+    "observed_rows": 4,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ14",
+    "question": "What is the assessed decision risk?",
+    "classes": [
+      "DecisionContext",
+      "DecisionRisk"
+    ],
+    "properties": [
+      "hasDecisionRisk"
+    ],
+    "expected": "HighDecisionRisk",
+    "query_file": "CQ14_decision_risk.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ15",
+    "question": "What operational flexibility is available?",
+    "classes": [
+      "DecisionContext",
+      "FlexibleResource"
+    ],
+    "properties": [
+      "hasAvailableFlexibility"
+    ],
+    "expected": "2 resources",
+    "query_file": "CQ15_available_flexibility.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ16",
+    "question": "What candidate actions are available?",
+    "classes": [
+      "DecisionContext",
+      "CandidateAction"
+    ],
+    "properties": [
+      "hasCandidateAction"
+    ],
+    "expected": "2 actions",
+    "query_file": "CQ16_candidate_actions.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ17",
+    "question": "What recommendation has the cognitive twin generated?",
+    "classes": [
+      "CognitiveTwin",
+      "DecisionRecommendation"
+    ],
+    "properties": [
+      "generatesRecommendation"
+    ],
+    "expected": "Recommendation_Heatwave_01",
+    "query_file": "CQ17_generated_recommendation.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ18",
+    "question": "Which actions have been selected?",
+    "classes": [
+      "DecisionRecommendation",
+      "AnticipatoryAction"
+    ],
+    "properties": [
+      "selectedAction"
+    ],
+    "expected": "2 actions",
+    "query_file": "CQ18_selected_actions.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ19",
+    "question": "What evidence and explanation justify the recommendation?",
+    "classes": [
+      "ExplanationAssurance",
+      "DecisionEvidence"
+    ],
+    "properties": [
+      "justifiedBy",
+      "supportedByEvidence"
+    ],
+    "expected": "1 explanation + 4 evidence items",
+    "query_file": "CQ19_recommendation_justification.rq",
+    "observed_rows": 4,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ20",
+    "question": "How confident is the system in the recommendation?",
+    "classes": [
+      "DecisionRecommendation"
+    ],
+    "properties": [
+      "confidence"
+    ],
+    "expected": "0.86",
+    "query_file": "CQ20_recommendation_confidence.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ21",
+    "question": "How quickly can each intervention be implemented?",
+    "classes": [
+      "AnticipatoryAction"
+    ],
+    "properties": [
+      "requiredLeadTime"
+    ],
+    "expected": "10 min and 30 min",
+    "query_file": "CQ21_action_lead_times.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ22",
+    "question": "What outcome observations are returned after an intervention?",
+    "classes": [
+      "AnticipatoryAction",
+      "ObservationBase"
+    ],
+    "properties": [
+      "returnsOutcomeDataTo"
+    ],
+    "expected": "ObservationBase_City_01",
+    "query_file": "CQ22_action_outcome_observation.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ23",
+    "question": "Where are intervention outcomes subsequently supplied?",
+    "classes": [
+      "ObservationBase",
+      "PredictionScenarioEngine"
+    ],
+    "properties": [
+      "providesStateTo"
+    ],
+    "expected": "PredictionScenarioEngine_01",
+    "query_file": "CQ23_outcome_state_destination.rq",
+    "observed_rows": 2,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ24",
+    "question": "What new impact forecast is produced from the updated state?",
+    "classes": [
+      "PredictionScenarioEngine",
+      "ImpactForecast"
+    ],
+    "properties": [
+      "producesImpactForecast"
+    ],
+    "expected": "ImpactForecast_Heatwave_01",
+    "query_file": "CQ24_updated_impact_forecast.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ25",
+    "question": "How is the updated scenario returned to the cognitive twin?",
+    "classes": [
+      "PredictionScenarioEngine",
+      "CognitiveTwin"
+    ],
+    "properties": [
+      "feedsScenarioTo"
+    ],
+    "expected": "CognitiveTwin_City_01",
+    "query_file": "CQ25_updated_scenario_to_twin.rq",
+    "observed_rows": 1,
+    "status": "PASS"
+  },
+  {
+    "cq": "CQ26",
+    "question": "Can the full decision trace be reconstructed end-to-end?",
+    "classes": [
+      "All core decision-chain classes"
+    ],
+    "properties": [
+      "end-to-end traversal"
+    ],
+    "expected": "\u22651 complete trace",
+    "query_file": "CQ26_end_to_end_trace.rq",
+    "observed_rows": 4,
+    "status": "PASS"
+  }
+]
