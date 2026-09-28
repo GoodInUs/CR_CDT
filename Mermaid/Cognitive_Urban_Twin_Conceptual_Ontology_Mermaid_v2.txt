@@ -1,0 +1,432 @@
+---
+title: Conceptual Ontology for Cross-Domain Cognitive Reasoning
+---
+classDiagram
+    direction LR
+
+    %% ============================================================
+    %% MODULE 1 — HAZARD AND CONTEXT
+    %% Represents observed and forecast environmental conditions.
+    %% Candidate alignments: SOSA/SSN, OWL-Time, GeoSPARQL.
+    %% ============================================================
+    namespace HazardContext {
+        class ExtremeWeatherEvent {
+            <<Context>>
+            +String eventId
+            +String eventType
+            +DateTime expectedOnset
+            +Duration expectedDuration
+            +String status
+        }
+        class WeatherForecast {
+            <<InformationObject>>
+            +String forecastId
+            +DateTime issueTime
+            +DateTime validFrom
+            +DateTime validTo
+            +Decimal confidence
+        }
+        class WeatherObservation {
+            <<Observation>>
+            +String observationId
+            +DateTime resultTime
+            +String observedProperty
+            +Decimal resultValue
+            +String unit
+        }
+        class EventSeverity {
+            <<Classification>>
+            +String severityLevel
+            +Decimal severityScore
+        }
+        class EventUncertainty {
+            <<Assessment>>
+            +Decimal confidenceValue
+            +String uncertaintyType
+        }
+        class AffectedArea {
+            <<SpatialEntity>>
+            +String areaId
+            +String geometry
+            +String administrativeArea
+        }
+    }
+
+    WeatherForecast "0..*" --> "1" ExtremeWeatherEvent : predicts
+    WeatherObservation "0..*" --> "0..1" ExtremeWeatherEvent : observes
+    ExtremeWeatherEvent "1" --> "1..*" AffectedArea : occursWithin
+    ExtremeWeatherEvent "1" --> "1" EventSeverity : hasSeverity
+    WeatherForecast "1" --> "0..1" EventUncertainty : hasUncertainty
+
+    %% ============================================================
+    %% MODULE 2 — DATA CENTRE OPERATION AND CAPABILITY
+    %% ============================================================
+    namespace DataCentreCapability {
+        class DataCentre {
+            <<Infrastructure>>
+            +String dataCentreId
+            +String location
+            +String facilityType
+        }
+        class DataCentreOperationalState {
+            <<OperationalState>>
+            +String stateId
+            +String availabilityState
+            +Decimal operationalMargin
+            +DateTime validAt
+        }
+        class ComputationalCapability {
+            <<Capability>>
+            +String capabilityId
+            +String capabilityType
+            +Decimal availableCapacity
+            +Decimal requiredCapacity
+            +String availabilityState
+        }
+        class ComputationalWorkload {
+            <<Workload>>
+            +String workloadId
+            +String workloadType
+            +String priority
+            +Boolean isFlexible
+            +Duration maximumDelay
+        }
+        class SupportingResource {
+            <<Resource>>
+            +String resourceId
+            +String resourceType
+            +String availabilityState
+        }
+        class CoolingCapability {
+            <<Capability>>
+            +Decimal availableCoolingCapacity
+            +Decimal coolingDemand
+            +Decimal waterRequirement
+        }
+        class PowerCapability {
+            <<Capability>>
+            +Decimal availablePower
+            +Decimal powerDemand
+            +Decimal reserveMargin
+        }
+        class StorageCapability {
+            <<Capability>>
+            +Decimal availableStorage
+            +Decimal requiredStorage
+        }
+        class NetworkCapability {
+            <<Capability>>
+            +Decimal availableBandwidth
+            +Decimal requiredBandwidth
+            +Decimal latency
+        }
+    }
+
+    DataCentre "1" --> "1" DataCentreOperationalState : hasState
+    DataCentre "1" --> "1..*" ComputationalCapability : provides
+    DataCentre "1" o-- "1..*" SupportingResource : contains
+    ComputationalWorkload "1..*" --> "1..*" ComputationalCapability : realises
+    ComputationalWorkload "1..*" --> "1..*" SupportingResource : uses
+    CoolingCapability --|> ComputationalCapability
+    PowerCapability --|> ComputationalCapability
+    StorageCapability --|> ComputationalCapability
+    NetworkCapability --|> ComputationalCapability
+    DataCentreOperationalState "1" --> "1..*" ComputationalCapability : constrains
+    ExtremeWeatherEvent "0..*" --> "0..*" DataCentreOperationalState : affects
+
+    %% ============================================================
+    %% MODULE 3 — URBAN SERVICES AND SERVICE CAPABILITY
+    %% ============================================================
+    namespace UrbanServices {
+        class UrbanService {
+            <<Service>>
+            +String serviceId
+            +String serviceType
+            +String responsibleOrganisation
+        }
+        class UrbanServiceOperationalState {
+            <<OperationalState>>
+            +String stateId
+            +String serviceStatus
+            +Decimal availableCapability
+            +DateTime validAt
+        }
+        class ServiceCapability {
+            <<Capability>>
+            +String capabilityId
+            +String capabilityType
+            +Decimal availableLevel
+            +Decimal requiredLevel
+        }
+        class ServiceCriticality {
+            <<Classification>>
+            +String criticalityLevel
+            +Integer priorityRank
+            +String justification
+        }
+        class ServiceDemand {
+            <<Demand>>
+            +Decimal demandLevel
+            +DateTime validAt
+            +String demandTrend
+        }
+        class ServiceArea {
+            <<SpatialEntity>>
+            +String serviceAreaId
+            +String geometry
+        }
+        class TrafficManagementService
+        class EmergencyResponseService
+        class HealthcareService
+        class CommunicationService
+        class EnergyManagementService
+    }
+
+    UrbanService "1" --> "1" UrbanServiceOperationalState : hasState
+    UrbanService "1" --> "1..*" ServiceCapability : provides
+    UrbanService "1" --> "1" ServiceCriticality : hasCriticality
+    UrbanService "1" --> "0..*" ServiceDemand : experiences
+    UrbanService "1" --> "1..*" ServiceArea : serves
+    TrafficManagementService --|> UrbanService
+    EmergencyResponseService --|> UrbanService
+    HealthcareService --|> UrbanService
+    CommunicationService --|> UrbanService
+    EnergyManagementService --|> UrbanService
+    ExtremeWeatherEvent "0..*" --> "0..*" UrbanServiceOperationalState : affects
+
+    %% ============================================================
+    %% MODULE 4 — CROSS-DOMAIN DEPENDENCY
+    %% ============================================================
+    namespace CrossDomainDependencyModel {
+        class CrossDomainDependency {
+            <<Dependency>>
+            +String dependencyId
+            +String dependencyType
+            +String dependencyStatus
+        }
+        class CapabilityRequirement {
+            <<Requirement>>
+            +Decimal minimumRequiredLevel
+            +String requiredCapabilityType
+            +Duration maximumInterruption
+        }
+        class DependencyCondition {
+            <<Constraint>>
+            +String conditionExpression
+            +String applicabilityContext
+        }
+        class DependencyCriticality {
+            <<Classification>>
+            +String criticalityLevel
+            +Integer priorityRank
+        }
+        class AcceptableDegradation {
+            <<Constraint>>
+            +Decimal minimumServiceLevel
+            +Duration maximumDegradationPeriod
+        }
+    }
+
+    UrbanService "1" --> "1..*" CrossDomainDependency : hasDependency
+    CrossDomainDependency "1" --> "1" ComputationalCapability : dependsOnCapability
+    CrossDomainDependency "1" --> "0..*" ComputationalWorkload : supportedByWorkload
+    CrossDomainDependency "1" --> "1" CapabilityRequirement : specifies
+    CrossDomainDependency "1" --> "0..*" DependencyCondition : appliesUnder
+    CrossDomainDependency "1" --> "1" DependencyCriticality : hasCriticality
+    CapabilityRequirement "1" --> "0..1" AcceptableDegradation : permits
+    ServiceCriticality "1" --> "0..*" DependencyCriticality : informs
+
+    %% ============================================================
+    %% MODULE 5 — FORECASTING AND IMPACT ASSESSMENT
+    %% ============================================================
+    namespace ForecastImpact {
+        class ForecastModel {
+            <<AnalyticalModel>>
+            +String modelId
+            +String modelType
+            +String modelVersion
+        }
+        class ExtremeWeatherForecastModel
+        class DataCentreForecastModel
+        class UrbanServiceForecastModel
+        class CrossDomainImpactModel
+        class ImpactAssessment {
+            <<Assessment>>
+            +String assessmentId
+            +DateTime assessmentTime
+            +String assessmentStatus
+        }
+        class PredictedImpact {
+            <<Prediction>>
+            +String impactType
+            +Decimal expectedMagnitude
+            +DateTime expectedOnset
+            +Duration expectedDuration
+        }
+        class RiskLevel {
+            <<Classification>>
+            +String riskCategory
+            +Decimal riskScore
+        }
+        class ConfidenceAssessment {
+            <<Assessment>>
+            +Decimal confidenceValue
+            +String confidenceBasis
+        }
+    }
+
+    ExtremeWeatherForecastModel --|> ForecastModel
+    DataCentreForecastModel --|> ForecastModel
+    UrbanServiceForecastModel --|> ForecastModel
+    CrossDomainImpactModel --|> ForecastModel
+    ForecastModel "1" --> "0..*" ImpactAssessment : generates
+    ImpactAssessment "1" --> "1..*" PredictedImpact : identifies
+    ImpactAssessment "1" --> "1" RiskLevel : hasRiskLevel
+    ImpactAssessment "1" --> "0..1" ConfidenceAssessment : hasConfidence
+    ImpactAssessment "1" --> "1..*" CrossDomainDependency : evaluates
+    PredictedImpact "0..*" --> "0..*" DataCentreOperationalState : predictsEffectOn
+    PredictedImpact "0..*" --> "0..*" UrbanServiceOperationalState : predictsEffectOn
+    WeatherForecast "1..*" --> "0..*" ForecastModel : providesInput
+    WeatherObservation "0..*" --> "0..*" ForecastModel : providesInput
+
+    %% ============================================================
+    %% MODULE 6 — DECISION AND FEEDBACK
+    %% ============================================================
+    namespace DecisionFeedback {
+        class DecisionRecommendation {
+            <<DecisionArtefact>>
+            +String recommendationId
+            +String rationale
+            +DateTime decisionDeadline
+            +String recommendationStatus
+        }
+        class HumanDecision {
+            <<Governance>>
+            +String decisionId
+            +String decisionOutcome
+            +String decisionRationale
+            +DateTime decisionTime
+        }
+        class DecisionPolicy {
+            <<Policy>>
+            +String policyId
+            +String policyType
+            +String policyStatement
+        }
+        class OperationalConstraint {
+            <<Constraint>>
+            +String constraintId
+            +String constraintType
+            +String constraintValue
+        }
+        class FeedbackAction {
+            <<Action>>
+            +String actionId
+            +String actionStatus
+            +DateTime plannedStart
+            +DateTime actualStart
+        }
+        class AdaptationAction
+        class RecoveryAction
+        class DataCentreFeedbackAction
+        class UrbanServiceFeedbackAction
+        class WorkloadPrioritisation
+        class WorkloadShifting
+        class CoolingAdjustment
+        class BatteryDispatch
+        class TrafficRerouting
+        class PublicAlert
+        class EvacuationSupport
+        class CriticalPowerAllocation
+    }
+
+    DecisionRecommendation "1" --> "1..*" FeedbackAction : recommends
+    DecisionRecommendation "1" --> "0..1" HumanDecision : reviewedBy
+    DecisionRecommendation "1" --> "0..*" DecisionPolicy : constrainedBy
+    DecisionRecommendation "1" --> "0..*" OperationalConstraint : constrainedBy
+    ImpactAssessment "1..*" --> "0..*" DecisionRecommendation : informs
+    AdaptationAction --|> FeedbackAction
+    RecoveryAction --|> FeedbackAction
+    DataCentreFeedbackAction --|> FeedbackAction
+    UrbanServiceFeedbackAction --|> FeedbackAction
+    WorkloadPrioritisation --|> DataCentreFeedbackAction
+    WorkloadShifting --|> DataCentreFeedbackAction
+    CoolingAdjustment --|> DataCentreFeedbackAction
+    BatteryDispatch --|> DataCentreFeedbackAction
+    TrafficRerouting --|> UrbanServiceFeedbackAction
+    PublicAlert --|> UrbanServiceFeedbackAction
+    EvacuationSupport --|> UrbanServiceFeedbackAction
+    CriticalPowerAllocation --|> UrbanServiceFeedbackAction
+    DataCentreFeedbackAction "0..*" --> "0..*" DataCentreOperationalState : targets
+    UrbanServiceFeedbackAction "0..*" --> "0..*" UrbanServiceOperationalState : targets
+
+    %% ============================================================
+    %% MODULE 7 — RESILIENCE, EVIDENCE AND ASSURANCE
+    %% ============================================================
+    namespace ResilienceAssurance {
+        class DecisionEvidence {
+            <<Evidence>>
+            +String evidenceId
+            +String evidenceType
+            +DateTime generatedAt
+        }
+        class ProvenanceRecord {
+            <<Provenance>>
+            +String provenanceId
+            +String source
+            +String responsibleAgent
+            +DateTime recordedAt
+        }
+        class ResilienceObjective {
+            <<Objective>>
+            +String objectiveId
+            +String objectiveType
+            +String targetCondition
+        }
+        class ContinuityObjective
+        class RecoveryObjective
+        class AdaptationObjective
+        class ActionOutcome {
+            <<Outcome>>
+            +String outcomeId
+            +String outcomeStatus
+            +DateTime observedAt
+            +String observedEffect
+        }
+        class EvaluationMetric {
+            <<Metric>>
+            +String metricId
+            +String metricName
+            +Decimal metricValue
+            +String unit
+        }
+    }
+
+    DecisionEvidence "1..*" --> "1..*" DecisionRecommendation : supports
+    DecisionEvidence "1" --> "1" ProvenanceRecord : hasProvenance
+    DecisionRecommendation "1" --> "1..*" ResilienceObjective : supportsObjective
+    ContinuityObjective --|> ResilienceObjective
+    RecoveryObjective --|> ResilienceObjective
+    AdaptationObjective --|> ResilienceObjective
+    FeedbackAction "1" --> "0..*" ActionOutcome : produces
+    ActionOutcome "1" --> "1..*" EvaluationMetric : evaluatedBy
+    ActionOutcome "1" --> "1..*" ResilienceObjective : evaluatedAgainst
+    ActionOutcome "0..*" --> "0..*" DataCentreOperationalState : updates
+    ActionOutcome "0..*" --> "0..*" UrbanServiceOperationalState : updates
+    ActionOutcome "0..*" --> "0..*" ImpactAssessment : informsFutureAssessment
+
+    %% ============================================================
+    %% END-TO-END COGNITIVE REASONING PATH
+    %% context -> capability -> dependency -> impact -> decision
+    %% -> action -> outcome -> updated state
+    %% ============================================================
+    ExtremeWeatherEvent ..> DataCentreOperationalState : changesContextFor
+    DataCentreOperationalState ..> ComputationalCapability : determinesAvailabilityOf
+    ComputationalCapability ..> CrossDomainDependency : satisfies
+    CrossDomainDependency ..> UrbanServiceOperationalState : influences
+    UrbanServiceOperationalState ..> ImpactAssessment : assessedBy
+    ImpactAssessment ..> DecisionRecommendation : supportsGenerationOf
+    DecisionRecommendation ..> FeedbackAction : proposes
+    FeedbackAction ..> ActionOutcome : resultsIn
+    ActionOutcome ..> DataCentreOperationalState : updatesKnowledgeOf
+    ActionOutcome ..> UrbanServiceOperationalState : updatesKnowledgeOf

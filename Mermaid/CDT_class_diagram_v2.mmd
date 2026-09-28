@@ -1,0 +1,425 @@
+---
+title: Integrated Conceptual Domain Model — Cognitive Urban Twin (v2)
+---
+classDiagram
+    direction LR
+
+    %% =========================================================
+    %% 1. ENVIRONMENTAL CONTEXT
+    %% =========================================================
+    namespace EnvironmentalContext {
+        class WeatherHazard {
+            <<abstract>>
+            +String hazardType
+            +String severityLevel
+            +DateTime expectedOnset
+            +Duration expectedDuration
+        }
+        class ExtremeHeat {
+            +Temperature maximumTemperature
+        }
+        class Flood {
+            +Length predictedDepth
+            +String floodZone
+        }
+        class Storm {
+            +Decimal windSpeed
+            +Decimal occurrenceProbability
+        }
+        class Drought {
+            +Decimal waterDeficit
+            +Duration dryPeriodDuration
+        }
+        class ColdSpell {
+            +Temperature minimumTemperature
+        }
+        class EnvironmentalDataSource {
+            <<interface>>
+            +getForecasts()
+            +getObservations()
+        }
+        class MetOfficeDataHub {
+            <<external API>>
+            +getAtmosphericModel()
+            +getWeatherWarnings()
+        }
+        class SensorNetwork {
+            <<SOSA/SSN>>
+            +getObservation()
+            +String observedProperty
+        }
+    }
+
+    WeatherHazard <|-- ExtremeHeat
+    WeatherHazard <|-- Flood
+    WeatherHazard <|-- Storm
+    WeatherHazard <|-- Drought
+    WeatherHazard <|-- ColdSpell
+    EnvironmentalDataSource <|.. MetOfficeDataHub
+    EnvironmentalDataSource <|.. SensorNetwork
+    MetOfficeDataHub ..> WeatherHazard : forecasts
+    SensorNetwork ..> WeatherHazard : observes
+
+    %% =========================================================
+    %% 2. IMPACT AND RISK ASSESSMENT
+    %% =========================================================
+    namespace RiskAssessment {
+        class VulnerabilityProfile {
+            +String populationDemographics
+            +Integer infrastructureAge
+            +Decimal vulnerabilityScore
+        }
+        class ExposureProfile {
+            +Integer exposedPopulation
+            +Integer assetsInHazardZone
+            +Decimal exposedAssetValue
+        }
+        class ImpactForecast {
+            <<assessment>>
+            +String impactLevel
+            +Decimal expectedSocioEconomicCost
+            +Decimal confidence
+            +calculateImpact()
+        }
+    }
+
+    WeatherHazard "1" --> "0..*" ImpactForecast : hazard input
+    VulnerabilityProfile "1..*" --> "0..*" ImpactForecast : informs
+    ExposureProfile "1..*" --> "0..*" ImpactForecast : informs
+
+    %% =========================================================
+    %% 3. PHYSICAL URBAN INFRASTRUCTURE
+    %% =========================================================
+    namespace UrbanInfrastructureDomain {
+        class UrbanInfrastructure {
+            <<CityGML 3.0>>
+            +String infrastructureId
+            +Geometry spatialGeometry
+            +CapabilityState operationalStatus
+        }
+        class DataCentre {
+            <<Brick Schema>>
+            +String dataCentreId
+            +Decimal powerUsageEffectiveness
+            +Geometry location
+            +String hazardExposure
+            +Power maximumPowerDemand
+            +CapabilityState capabilityState
+            +getTelemetry()
+        }
+        class CoolingSystem {
+            +Volume evaporativeWaterUse
+            +Power powerDraw
+            +Temperature supplyTemperature
+        }
+        class WaterSupply {
+            +Volume availableWater
+            +Decimal stressLevel
+            +String source
+        }
+        class WasteHeat {
+            +Temperature outputTemperature
+            +Power recoverableThermalPower
+        }
+        class DataCentreLoad {
+            <<abstract>>
+            +Power computePower
+            +String priority
+            +Duration executionWindow
+        }
+        class ElasticDataLoad {
+            +Duration delayTolerance
+            +defer()
+            +throttle()
+        }
+        class RigidDataLoad {
+            +Decimal requiredAvailability
+            +String criticalityLevel
+        }
+        class DistrictHeatingNetwork {
+            +Power heatDemand
+            +Temperature requiredTemperature
+            +receiveWasteHeat()
+        }
+    }
+
+    UrbanInfrastructure "1" o-- "0..*" DataCentre : contains
+    DataCentre "1" *-- "1..*" CoolingSystem : operates
+    DataCentre "1" o-- "1..*" DataCentreLoad : hosts
+    DataCentre "1" --> "0..*" WasteHeat : produces
+    DataCentreLoad <|-- ElasticDataLoad
+    DataCentreLoad <|-- RigidDataLoad
+    WasteHeat "0..*" --> "0..1" DistrictHeatingNetwork : supplies
+    CoolingSystem "1" --> "0..1" WaterSupply : consumes
+
+    %% ---- Weather -> infrastructure threat couplings (vulnerability) ----
+    WeatherHazard "1" --> "0..*" DataCentre : threatens
+    ExtremeHeat ..> CoolingSystem : raises cooling load
+    Flood ..> DataCentre : disrupts access and power
+    Storm ..> DataCentre : disrupts connectivity
+    Drought ..> WaterSupply : constrains
+    ColdSpell ..> DistrictHeatingNetwork : raises heat demand
+
+    %% =========================================================
+    %% 4. URBAN SERVICES  (data-centre-dependent)
+    %% =========================================================
+    namespace UrbanServiceDomain {
+        class UrbanService {
+            +String serviceId
+            +ServiceType serviceType
+            +CriticalityLevel criticality
+            +CapabilityState capabilityState
+            +Decimal minimumServiceLevel
+        }
+        class ServiceType {
+            <<enumeration>>
+            TrafficManagement
+            HealthcareServices
+            EmergencyResponse
+            PublicSafety
+            EnergyManagement
+            Communications
+            OtherCritical
+        }
+        class CriticalityLevel {
+            <<enumeration>>
+            Critical
+            High
+            Medium
+            Low
+        }
+        class CapabilityState {
+            <<enumeration>>
+            Normal
+            Degraded
+            Failed
+            Recovering
+        }
+    }
+
+    UrbanService "1..*" --> "1..*" DataCentre : dependsOn
+    RigidDataLoad "0..*" --> "0..*" UrbanService : supports
+    UrbanService "0..*" --> "0..*" ImpactForecast : service impact target
+
+    %% =========================================================
+    %% 5. ENERGY AND FLEXIBILITY SYSTEM
+    %% =========================================================
+    namespace EnergyFlexibilityDomain {
+        class ElectricityGrid {
+            <<UKPN Open Data>>
+            +Power availableHeadroom
+            +Power reserveMargin
+            +String operatingState
+            +getGridState()
+        }
+        class GridConstraint {
+            +String constraintType
+            +Power capacityLimit
+            +Decimal voltageLimit
+            +Decimal outageProbability
+        }
+        class FlexibleResource {
+            <<abstract>>
+            +Duration responseTime
+            +Power availableCapacity
+            +activate()
+        }
+        class BatteryStorage {
+            +Decimal stateOfCharge
+            +Power dischargeCapacity
+        }
+        class ComputeFlexibility {
+            +Power throttlingCapacity
+            +Power shiftableLoad
+        }
+        class ElectricVehicleFleet {
+            +Power vehicleToGridCapacity
+            +Integer availableVehicles
+        }
+        class CarbonIntensityService {
+            <<NESO external API>>
+            +Decimal currentCarbonIntensity
+            +Decimal forecastCarbonIntensity
+            +getCarbonForecast()
+        }
+    }
+
+    FlexibleResource <|-- BatteryStorage
+    FlexibleResource <|-- ComputeFlexibility
+    FlexibleResource <|-- ElectricVehicleFleet
+    ElectricityGrid "1" --> "0..*" GridConstraint : experiences
+    ElectricityGrid "1" --> "0..*" DataCentre : supplies electricity
+    DataCentre "1" --> "0..*" GridConstraint : contributes demand
+    Storm ..> ElectricityGrid : disrupts supply
+    ElasticDataLoad "0..*" --> "1" ComputeFlexibility : provides
+
+    %% =========================================================
+    %% 6. ANALYTICS  (feeds the twin — decision D-A)
+    %% =========================================================
+    namespace AnalyticsDomain {
+        class PredictionScenarioEngine {
+            <<analytics>>
+            +forecastWeatherImpact()
+            +forecastServiceRisk()
+            +modelPropagation()
+            +generateScenarios()
+        }
+    }
+
+    %% =========================================================
+    %% 7. COGNITIVE TWIN
+    %% =========================================================
+    namespace CognitiveTwinDomain {
+        class CognitiveTwin {
+            <<decision-support system>>
+            +reasonOverState()
+            +optimiseResourceAllocation()
+            +explainRecommendation()
+        }
+        class ObservationBase {
+            <<integrated state store>>
+            +storeObservation()
+            +getCurrentState()
+            +getHistoricalState()
+        }
+        class KnowledgeBase {
+            <<ontology and knowledge graph>>
+            +validateSemanticConsistency()
+            +inferDependencies()
+            +getDependencyGraph()
+        }
+        class DecisionBase {
+            <<policy and action store>>
+            +String allocationPolicies
+            +String workloadRules
+            +String responseConstraints
+            +selectAction()
+            +recordDecision()
+        }
+        class DecisionRecommendation {
+            +String recommendationId
+            +String rationale
+            +Decimal confidence
+            +DateTime decisionDeadline
+        }
+        class ExplanationAssurance {
+            <<assurance>>
+            +String rationale
+            +String provenance
+            +Decimal confidence
+            +traceEvidence()
+        }
+    }
+
+    CognitiveTwin "1" *-- "1" ObservationBase
+    CognitiveTwin "1" *-- "1" KnowledgeBase
+    CognitiveTwin "1" *-- "1" DecisionBase
+    CognitiveTwin "1" --> "0..*" DecisionRecommendation : generates
+    DecisionBase "1" --> "0..*" DecisionRecommendation : supports
+    DecisionRecommendation "1" --> "1" ExplanationAssurance : justified by
+    CognitiveTwin ..> ExplanationAssurance : produces
+
+    %% ---- Analytics feeds the twin ----
+    ObservationBase ..> PredictionScenarioEngine : provides state
+    KnowledgeBase ..> PredictionScenarioEngine : provides model
+    PredictionScenarioEngine --> ImpactForecast : produces
+    PredictionScenarioEngine ..> CognitiveTwin : feeds scenarios
+    ImpactForecast ..> CognitiveTwin : provides risk context
+
+    %% ---- Observation inputs ----
+    CarbonIntensityService ..> ObservationBase : provides carbon signal
+    DataCentre ..> ObservationBase : provides telemetry
+    ElectricityGrid ..> ObservationBase : provides grid state
+    SensorNetwork ..> ObservationBase : provides observations
+    UrbanService ..> ObservationBase : provides service status
+
+    %% ---- Knowledge base represents the domain (typed dependency graph) ----
+    KnowledgeBase ..> ImpactForecast : interprets
+    KnowledgeBase ..> DataCentre : represents
+    KnowledgeBase ..> ElectricityGrid : represents
+    KnowledgeBase ..> FlexibleResource : represents
+    KnowledgeBase ..> UrbanService : represents
+    KnowledgeBase ..> WeatherHazard : represents
+
+    %% =========================================================
+    %% 8. FEEDBACK AND ADAPTATION ACTIONS  (grouped by target — D-D)
+    %% =========================================================
+    namespace FeedbackActionDomain {
+        class AnticipatoryAction {
+            <<abstract>>
+            +String actionId
+            +Duration requiredLeadTime
+            +CapabilityState actionStatus
+            +execute()
+            +evaluateOutcome()
+        }
+        class DataCentreFeedbackAction {
+            <<abstract>>
+        }
+        class UrbanServiceFeedbackAction {
+            <<abstract>>
+        }
+        class WorkloadManagement {
+            +deferElasticLoad()
+            +throttleComputeLoad()
+            +migrateWorkload()
+        }
+        class GridBrokering {
+            +dispatchBattery()
+            +dispatchVehicleToGrid()
+            +requestDemandResponse()
+        }
+        class CoolingWaterManagement {
+            +limitEvaporativeUse()
+            +switchToDryCooling()
+        }
+        class RecoveryPlanning {
+            +planRampUp()
+            +sequenceRestoration()
+        }
+        class DistrictHeatingControl {
+            +allocateWasteHeat()
+        }
+        class CivicEmergencyResponse {
+            +publishHazardWarning()
+            +preDeployFloodBarriers()
+            +openEmergencyFacilities()
+        }
+        class SocioEconomicResponse {
+            +distributeCashTransfer()
+            +prioritiseVulnerableGroups()
+        }
+        class ServiceModeControl {
+            +degradeGracefully()
+            +restoreService()
+        }
+    }
+
+    AnticipatoryAction <|-- DataCentreFeedbackAction
+    AnticipatoryAction <|-- UrbanServiceFeedbackAction
+    DataCentreFeedbackAction <|-- WorkloadManagement
+    DataCentreFeedbackAction <|-- GridBrokering
+    DataCentreFeedbackAction <|-- CoolingWaterManagement
+    DataCentreFeedbackAction <|-- RecoveryPlanning
+    DataCentreFeedbackAction <|-- DistrictHeatingControl
+    UrbanServiceFeedbackAction <|-- CivicEmergencyResponse
+    UrbanServiceFeedbackAction <|-- SocioEconomicResponse
+    UrbanServiceFeedbackAction <|-- ServiceModeControl
+
+    DecisionRecommendation "1" --> "1..*" AnticipatoryAction : recommends
+
+    WorkloadManagement ..> ElasticDataLoad : defers or throttles
+    WorkloadManagement ..> ComputeFlexibility : activates
+    WorkloadManagement ..> DataCentre : migrates across
+    GridBrokering ..> BatteryStorage : dispatches
+    GridBrokering ..> ElectricVehicleFleet : dispatches
+    GridBrokering ..> ElectricityGrid : supports
+    CoolingWaterManagement ..> CoolingSystem : adjusts
+    CoolingWaterManagement ..> WaterSupply : limits use
+    RecoveryPlanning ..> DataCentre : restores
+    DistrictHeatingControl ..> WasteHeat : allocates
+    CivicEmergencyResponse ..> WeatherHazard : responds to
+    CivicEmergencyResponse ..> UrbanService : protects
+    SocioEconomicResponse ..> VulnerabilityProfile : targets
+    ServiceModeControl ..> UrbanService : adapts mode
+    AnticipatoryAction ..> ObservationBase : returns outcome data
